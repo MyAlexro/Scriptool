@@ -15,7 +15,7 @@ namespace Scriptool
     {
 
         static public string scriptoolPath = Path.GetDirectoryName(System.IO.Path.GetFullPath("Scriptool.exe")); //prende la path di dov'è Scriptool.exe (togliendo la parte Scriptool.exe)
-        static public string lingua; //lingua di scriptool = ? ("IT","EN")   PROVA
+        static public string lingua; //lingua di scriptool = ? ("IT","EN")
         static public string apriQRcode;  //aprire il codice QR dopo averlo creato?
         static public string QRcodeFormat; //salva il codice qr con il formato: ?
         static public string defaultPath; //salva il codice qr nella path: ?

@@ -18,7 +18,7 @@ namespace Scriptool
         static public string lingua; //lingua di scriptool = ? ("IT","EN")
         static public string apriQRcode;  //aprire il codice QR dopo averlo creato?
         static public string QRcodeFormat; //salva il codice qr con il formato: ?
-        static public string defaultPath; //salva il codice qr nella path: ?
+        static public string defaultPath; //salva il codice qr nella path: ? 
 
         [STAThread]
         static void Main(string[] args)

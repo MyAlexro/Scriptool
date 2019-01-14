@@ -11,7 +11,7 @@ using System.Globalization; //per sapere la lingua di sistema
 
 namespace Scriptool
 {
-    class Program
+    class Program : GeneraQRcode
     {
 
         static public string scriptoolPath = Path.GetDirectoryName(System.IO.Path.GetFullPath("Scriptool.exe")); //prende la path di dov'è Scriptool.exe (togliendo la parte Scriptool.exe)
@@ -124,11 +124,11 @@ namespace Scriptool
 
 
         //     ---------MENU--------
-        static void MenuPrint()
+        public static void MenuPrint()
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine("       _____           _       _              _      ");
+            Console.WriteLine(@"       _____           _       _              _      ");
             Console.WriteLine(@"      /  ___|         (_)     | |            | |     ");
             Console.WriteLine(@"      \ `--.  ___ _ __ _ _ __ | |_ ___   ___ | |     ");
             Console.WriteLine(@"       `--. \/ __| '__| | '_ \| __/ _ \ / _ \| |     ");
@@ -178,10 +178,10 @@ namespace Scriptool
 
             if (opz == "D1" || opz == "NumPad1") //sono i Keycode dei tasti. Per vederli basta scrivere Keys. e vedere i suggeriti
             {
-                GeneraQRcode();
+                ScegliQRcode();
+               // GeneraQRcode();
             }
             else if (opz == "D2" || opz == "NumPad2")
-
             {
                 GeneraPW();
             }
@@ -231,75 +231,11 @@ namespace Scriptool
 
 
 
-        //               -----------OPZIONI-----------
+        //               -----------FUNZIONI-----------
 
-        //Genera un codice QR
-        static void GeneraQRcode()
-        {
-            if (lingua == "IT")
-            {
-                Console.Write(": Inserisci il link/testo da convertire: ");
-            }
-            else if (lingua == "EN")
-            {
-                Console.Write(": Type the link/text you want to convert: ");
-            }
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            string linkName = Console.ReadLine();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(linkName, QRCodeGenerator.ECCLevel.Q);
-            QRCode qrCode = new QRCode(qrCodeData);
-            Bitmap qrCodeImage = qrCode.GetGraphic(20);
-            if (!Directory.Exists(defaultPath)) //se la cartella dove salvare i codici QR non esiste(perchè è stata eliminata o rinominata) non genera il codice e da questo errore
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                if (lingua == "IT")
-                {
-                    Console.WriteLine("Impossibile trovare la cartella dove salvare i codici QR. Premere Invio per tornare al Menu principale");
-                }
-                else if (lingua == "EN")
-                {
-                    Console.WriteLine("The folder to save QR codes cannot be found. Press Enter to go back to the main Menu");
-                }
-                Console.ReadKey();
-                MenuPrint();
-            }
-            else if (Directory.Exists(defaultPath))  //se invece esiste
-            {
-                if (QRcodeFormat == "JPEG") //se l'impostazione per il formato con cui formare il QR code è JPEG
-                {
-                    qrCodeImage.Save($"{defaultPath}/{linkName}.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
-                }
-                else if (QRcodeFormat == "PNG") //se invece è uguale a PNG
-                {
-                    qrCodeImage.Save($"{defaultPath}/{linkName}.png", System.Drawing.Imaging.ImageFormat.Png);
-                }
-                if (apriQRcode == "Y")  //se la preferenza/impostazione apriQRcode è uguale a Y apre il qr e scrive 
-                {
-                    System.Diagnostics.Process.Start($"{defaultPath}/{linkName}.jpeg");
-                    if (lingua == "IT")
-                    {
-                        Console.WriteLine("Codice QR generato e salvato nella cartella predefinita. Premere invio per tornare al Menu principale");
-                    }
-                    else if (lingua == "EN")
-                    {
-                        Console.WriteLine("QR code generated and saved to the defined path. Press Enter to go back to the main Menu");
-                    }
-                }
-                else  // scrive solo che è stato creato sul desktop
-                {
-                    if (lingua == "IT")
-                    {
-                        Console.WriteLine("Codice QR generato e salvato nella cartella predefinita. Premere invio per tornare al Menu principale");
-                    }
-                    else if (lingua == "EN")
-                    {
-                        Console.WriteLine("QR code created and saved to the defined path. Press Enter to go back to the main Menu");
-                    }
-                }
-                Console.ReadLine();
-                MenuPrint();
-            }
-        }
+        //----Genera codice QR (sopra)----
+
+
 
         //----Genera password----
         static void GeneraPW()
@@ -425,7 +361,7 @@ namespace Scriptool
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             if (lingua == "IT")
             {
-                Console.WriteLine("  _____                           _            _             _ ");
+                Console.WriteLine(@"  _____                           _            _             _ ");
                 Console.WriteLine(@" |_   _|                         | |          (_)           (_)");
                 Console.WriteLine(@"   | |  _ __ ___  _ __   ___  ___| |_ __ _ _____  ___  _ __  _ ");
                 Console.WriteLine(@"   | | | '_ ` _ \| '_ \ / _ \/ __| __/ _` |_  / |/ _ \| '_ \| |");
@@ -439,15 +375,15 @@ namespace Scriptool
                                    "                                                   \n" +
                                    "                                                   \n");
                 Console.WriteLine($"Scrivi il numero dell'impostazione che vuoi modificare:\n");
-                Console.WriteLine($" 1)Lingua: {lingua}");
-                Console.WriteLine($" 2)Apri codice QR dopo la creazione: {apriQRcode}");
-                Console.WriteLine($" 3)Salva QR code con formato: {QRcodeFormat}");
-                Console.WriteLine($" 4)Salva i codici QR nella cartella: {defaultPath}\n");
+                Console.WriteLine($" 1) Lingua: {lingua}");
+                Console.WriteLine($" 2) Apri codice QR dopo la creazione: {apriQRcode}");
+                Console.WriteLine($" 3) Salva QR code con formato: {QRcodeFormat}");
+                Console.WriteLine($" 4) Salva i codici QR nella cartella: {defaultPath}\n");
                 Console.WriteLine($" 5)Torna indietro\n\n");
             }
             else if (lingua == "EN")
             {
-                Console.WriteLine("   _____      _   _   _                 ");
+                Console.WriteLine(@"   _____      _   _   _                 ");
                 Console.WriteLine(@"  / ____|    | | | | (_)                ");
                 Console.WriteLine(@" | (___   ___| |_| |_ _ _ __   __ _ ___ ");
                 Console.WriteLine(@"  \___ \ / _ \ __| __| | '_ \ / _` / __|");
@@ -461,10 +397,10 @@ namespace Scriptool
                                    "                                                   \n" +
                                    "                                                   \n");
                 Console.WriteLine($"Type the number of the setting you want to edit:\n");
-                Console.WriteLine($" 1)Language: {lingua}");
-                Console.WriteLine($" 2)Open the QR code after it has been created: {apriQRcode}");
-                Console.WriteLine($" 3)Save the QR code with the extension: {QRcodeFormat}");
-                Console.WriteLine($" 4)Save QR codes to path: {defaultPath}\n");
+                Console.WriteLine($" 1) Language: {lingua}");
+                Console.WriteLine($" 2) Open the QR code after it has been created: {apriQRcode}");
+                Console.WriteLine($" 3) Save the QR code with the extension: {QRcodeFormat}");
+                Console.WriteLine($" 4) Save QR codes to path: {defaultPath}\n");
                 Console.WriteLine($" 5)Go back\n\n");
             }
 
@@ -579,7 +515,7 @@ namespace Scriptool
                     {
                         Console.WriteLine("Extension updated, press Enter to go back to the main Menu");
                     }
-                    QRcodeFormat = QRcodeFormatBuff;
+                    QRcodeFormat = QRcodeFormatBuff.ToUpper();
                     SalvaImpostazioni();
                     Console.ReadLine();
                     MenuPrint();

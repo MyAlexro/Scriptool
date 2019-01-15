@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Text;
 using System.Threading;
-using QRCoder;
-using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using Scriptool; //così da poter aprire Form1.cs
 using System.Globalization; //per sapere la lingua di sistema
 
 

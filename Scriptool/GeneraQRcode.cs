@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.IO;
 using static Scriptool.Program;
 using QRCoder;
@@ -14,7 +12,9 @@ namespace Scriptool
     class GeneraQRcode
     {
 
-        public static string WiFiPW; //Password della rete WiFi (l'ho messa public così da poterla svuotare dopo aver generato il codice qr)
+        public static string WiFiPW = null; //Password della rete WiFi (l'ho messa public così da poterla svuotare dopo aver generato il codice qr)
+        public static PhoneNumber numTel = null; //numero di telefono (stesso motivo per sopra)
+        public static string numTelString = null; //numero di telefono in string (stesso motivo sopra)
 
 
         public static void ScegliQRcode()
@@ -22,21 +22,26 @@ namespace Scriptool
             QRCodeGenerator qrGenerator = new QRCodeGenerator(); //inizializza il generatore di codici QR
             if (lingua == "IT")
             {
-                Console.WriteLine(": Seleziona il tipo di codice QR da generare:\n\n" +
-                                   " 1) Testo/Link\n" +
-                                   " 2) Accesso automatico ad una rete WiFi\n" +
-                                   " 3) Chiama un numero di telefono\n");
+                Console.WriteLine(": Seleziona il tipo di codice QR da generare:\n\n" +   //scrivi i tipi di codici QR in italiano
+                                  " 1) Testo/Link\n" +
+                                  " 2) Accesso automatico ad una rete WiFi\n" +
+                                  " 3) Chiama un numero di telefono\n" +
+                                  "\n" +
+                                  " 4)Ritorna al Menu principale\n");
             }
             else if (lingua == "EN")
             {
-                Console.WriteLine(": Select the type of QR code you want to generate:\n" +
+                Console.WriteLine(": Select the type of QR code you want to generate:\n" +  //scrivi i tipi di codici QR in inglese
                                    " 1) Text/Link\n" +
                                    " 2) Autoconnect to a WiFi\n" +
-                                   " 3) Dial a phone number\n");
+                                   " 3) Dial a phone number\n" +
+                                   "\n" +
+                                   " 4)Go back to the main Menu\n");
             }
-            Console.Write("  ");
-            string opz = Console.ReadKey().Key.ToString();
-            if (opz == "1" || opz == "NumPad1") //QR CODE TESTO/LINK
+            Console.Write("  ");  //spazi per la formattazione
+            string opz = Console.ReadKey().Key.ToString();  //salva l'opzione (il tipo di codice QR) scelto
+
+            if (opz == "D1" || opz == "NumPad1") //-------------QR CODE TESTO/LINK--------------
             {
                 if (lingua == "IT")
                 {
@@ -46,17 +51,16 @@ namespace Scriptool
                 {
                     Console.Write(") Write the text/link you want to convert: ");
                 }
-                string testo_Link = Console.ReadLine();
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(testo_Link, QRCodeGenerator.ECCLevel.Q);
-                QRCode qrCode = new QRCode(qrCodeData);
-                Bitmap qrCodeImage = qrCode.GetGraphic(20);
-                SalvaQRcode(qrCodeImage,testo_Link);
+                string testo_Link = Console.ReadLine();  //prende il testo/link da convertire inserito dall'utente
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(testo_Link, QRCodeGenerator.ECCLevel.Q);  //object contenente dati da convertire in codice QR
+                QRCode qrCode = new QRCode(qrCodeData);  //converte i dati in un codice QR
+                Bitmap qrCodeImage = qrCode.GetGraphic(20);  //renderizza l'immagine del codice QR
+                SalvaQRcode(qrCodeImage, testo_Link); //richiama la funzione SalvaQRcode passando i parametri necessari
             }
-            else if (opz == "2" || opz == "NumPad2") //QR CODE WIFI
+            else if (opz == "D2" || opz == "NumPad2") //---------------QR CODE WIFI---------------
             {
-                string WiFiSSID;
-                WiFi WiFiGen;
-                string payload;
+                string WiFiSSID; //nome della rete
+                WiFi WiFiGen; // object contenente tutti i dati da convertire in codice QR
                 if (lingua == "IT")
                 {
                     Console.Write(") Inserisci il nome della rete WiFi a cui connettersi: ");
@@ -72,12 +76,11 @@ namespace Scriptool
                     }
                     else
                     {
-                        WiFiGen = new WiFi(WiFiSSID, WiFiPW, WiFi.Authentication.WPA); //include WPA2 e WPA
-                        payload = WiFiGen.ToString();
-                        QRCodeData qrCodeData = qrGenerator.CreateQrCode(payload, QRCodeGenerator.ECCLevel.Q);
-                        QRCode qrCode = new QRCode(qrCodeData);
-                        Bitmap qrCodeImage = qrCode.GetGraphic(20);
-                        SalvaQRcode(qrCodeImage, WiFiSSID);
+                        WiFiGen = new WiFi(WiFiSSID, WiFiPW, WiFi.Authentication.WPA); // !!!!!WiFi.Authentication.WPA include sia WPA che WPA2!!!!!
+                        QRCodeData qrCodeData = qrGenerator.CreateQrCode(WiFiGen, QRCodeGenerator.ECCLevel.Q); //object contenente tutti i dati da convertire 
+                        QRCode qrCode = new QRCode(qrCodeData); //converte i dati
+                        Bitmap qrCodeImage = qrCode.GetGraphic(20);  //renderizza l'mmagine 
+                        SalvaQRcode(qrCodeImage, WiFiSSID);   //richiama la funzione SalvaQRcode passando i parametri necessari (passa il WiFISSID cosi salva il codice QR con il nome della rete)
                     }
                 }
                 else if (lingua == "EN")
@@ -95,21 +98,42 @@ namespace Scriptool
                     }
                     else
                     {
-                        WiFiGen = new WiFi(WiFiSSID, WiFiPW, WiFi.Authentication.WPA); //include WPA2 e WPA
-                        payload = WiFiGen.ToString();
-                        QRCodeData qrCodeData = qrGenerator.CreateQrCode(payload, QRCodeGenerator.ECCLevel.Q);
+                        WiFiGen = new WiFi(WiFiSSID, WiFiPW, WiFi.Authentication.WPA);
+                        QRCodeData qrCodeData = qrGenerator.CreateQrCode(WiFiGen, QRCodeGenerator.ECCLevel.Q);
                         QRCode qrCode = new QRCode(qrCodeData);
                         Bitmap qrCodeImage = qrCode.GetGraphic(20);
                         SalvaQRcode(qrCodeImage, WiFiSSID);
                     }
                 }
             }
-            else if (opz == "3" || opz == "NumPad3")  //NUMERO DI TELEFONO
+            else if (opz == "D3" || opz == "NumPad3")  //----------NUMERO DI TELEFONO-------------
             {
-                Console.Write(") Scrivi il numero di telefono che verrà chiamato: ");
-                PhoneNumber numTel = new PhoneNumber(Console.ReadLine());
-            }
+                if (lingua == "IT")
+                {
+                    Console.Write(") Scrivi il numero di telefono che verrà chiamato(non verrà conservato): +");
+                    numTelString = Console.ReadLine();
+                    numTel = new PhoneNumber(numTelString);
+                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(numTel, QRCodeGenerator.ECCLevel.Q);
+                    QRCode qrCode = new QRCode(qrCodeData);
+                    Bitmap qrCodeImage = qrCode.GetGraphic(20);
+                    SalvaQRcode(qrCodeImage, numTelString);
 
+                }
+                else if (lingua == "EN")
+                {
+                    Console.Write(") Type the phone number that will be dialed(it won't be stored): +");
+                    numTelString = Console.ReadLine();
+                    numTel = new PhoneNumber(numTelString);
+                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(numTel, QRCodeGenerator.ECCLevel.Q);
+                    QRCode qrCode = new QRCode(qrCodeData);
+                    Bitmap qrCodeImage = qrCode.GetGraphic(20);
+                    SalvaQRcode(qrCodeImage, numTelString);
+                }
+            }
+            else if (opz == "D4" || opz == "NumPad4")
+            {
+                MenuPrint();
+            }
             else //se l'user scrive un tipo di qr code non esistente
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -127,7 +151,7 @@ namespace Scriptool
         }
 
 
-        public static void SalvaQRcode(Bitmap qrCodeImage, string Contenuto)
+        public static void SalvaQRcode(Bitmap qrCodeImage, string NomeQRcode)
         {
             if (!Directory.Exists(defaultPath)) //se la cartella dove salvare i codici QR non esiste(perchè è stata eliminata o rinominata) non genera il codice e da questo errore
             {
@@ -147,15 +171,15 @@ namespace Scriptool
             {
                 if (QRcodeFormat == "JPEG") //se l'impostazione per il formato con cui formare il QR code è JPEG
                 {
-                    qrCodeImage.Save($"{defaultPath}/{Contenuto}.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                    qrCodeImage.Save($"{defaultPath}/{NomeQRcode}.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
                 }
                 else if (QRcodeFormat == "PNG") //se invece è uguale a PNG
                 {
-                    qrCodeImage.Save($"{defaultPath}/{Contenuto}.png", System.Drawing.Imaging.ImageFormat.Png);
+                    qrCodeImage.Save($"{defaultPath}/{NomeQRcode}.png", System.Drawing.Imaging.ImageFormat.Png);
                 }
                 if (apriQRcode == "Y")  //se la preferenza/impostazione apriQRcode è uguale a Y apre il qr e scrive 
                 {
-                    System.Diagnostics.Process.Start($"{defaultPath}/{Contenuto}.jpeg");
+                    System.Diagnostics.Process.Start($"{defaultPath}/{NomeQRcode}.jpeg");
                     if (lingua == "IT")
                     {
                         Console.WriteLine("Codice QR generato e salvato nella cartella predefinita. Premere invio per tornare al Menu principale");
@@ -176,10 +200,13 @@ namespace Scriptool
                         Console.WriteLine("QR code created and saved to the defined path. Press Enter to go back to the main Menu");
                     }
                 }
-                WiFiPW = "";  //svuota la password
-                Console.ReadLine();
-                MenuPrint();
             }
+            WiFiPW = null;  //svuota la password
+            numTel = null;  //svuota il numero di tel
+            numTelString = null; //svuota la string numero di tel
+            Console.ReadLine();
+            MenuPrint();
+
         }
     }
 }

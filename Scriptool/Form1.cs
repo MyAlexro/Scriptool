@@ -17,7 +17,7 @@ namespace Scriptool
             string path = folderBrowserDialog1.SelectedPath;
             if (path != "")
             {
-                Program.defaultPath = path;
+                MainClass.defaultPath = path;
             }
             this.Close();
         }

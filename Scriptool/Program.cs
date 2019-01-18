@@ -4,6 +4,9 @@ using System.Threading;
 using System.IO;
 using System.Windows.Forms;
 using System.Globalization; //per sapere la lingua di sistema
+using System.Collections.Generic;
+using System.Linq;
+
 
 
 namespace Scriptool
@@ -125,20 +128,16 @@ namespace Scriptool
         {
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine(@"       _____           _       _              _      ");
-            Console.WriteLine(@"      /  ___|         (_)     | |            | |     ");
-            Console.WriteLine(@"      \ `--.  ___ _ __ _ _ __ | |_ ___   ___ | |     ");
-            Console.WriteLine(@"       `--. \/ __| '__| | '_ \| __/ _ \ / _ \| |     ");
-            Console.WriteLine(@"      /\__/ / (__| |  | | |_) | || (_) | (_) | |     ");
-            Console.WriteLine(@"      \____/ \___|_|  |_| .__/ \__\___/ \___/|_|     ");
-            Console.WriteLine(@"                        | |                          ");
-            Console.WriteLine("                        |_|                           \t \n");
-            Console.WriteLine("________________________________________________________________________________________________________________________\n" +
-                               "                                                   \n" +
-                               "                                                   \n" +
-                               "                                                   \n" +
-                               "                                                   \n" +
-                               "                                                   \n");
+            Console.WriteLine("       _____           _       _              _      \n" +
+                              "      /  ___|         (_)     | |            | |     \n" +
+                             "      \\ `--.  ___ _ __ _ _ __ | |_ ___   ___ | |     \n" +
+                              "       `--. \\/ __| '__| | '_ \\| __/ _ \\ / _ \\| |     \n" +
+                               "      /\\__/ / (__| |  | | |_) | || (_) | (_) | |     \n" +
+                            "      \\____/ \\___|_|  |_| .__/ \\__\\___/ \\___/|_|     \n" +
+                               "                        | |                          \n" +
+                               "                        |_|                           \t \n" +
+                              "________________________________________________________________________________________________________________________\n" +
+                              "\n\n\n\n\n");
 
             Console.CursorSize = 1;
             if (lingua == "IT")
@@ -175,8 +174,7 @@ namespace Scriptool
 
             if (opz == "D1" || opz == "NumPad1") //sono i Keycode dei tasti. Per vederli basta scrivere Keys. e vedere i suggeriti
             {
-                ScegliQRcode();
-               // GeneraQRcode();
+                GeneraQRcode.ScegliQRcode();
             }
             else if (opz == "D2" || opz == "NumPad2")
             {

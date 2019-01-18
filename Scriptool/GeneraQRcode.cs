@@ -111,24 +111,17 @@ namespace Scriptool
                 if (lingua == "IT")
                 {
                     Console.Write(") Scrivi il numero di telefono che verrà chiamato(non verrà conservato): +");
-                    numTelString = Console.ReadLine();
-                    numTel = new PhoneNumber(numTelString);
-                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(numTel, QRCodeGenerator.ECCLevel.Q);
-                    QRCode qrCode = new QRCode(qrCodeData);
-                    Bitmap qrCodeImage = qrCode.GetGraphic(20);
-                    SalvaQRcode(qrCodeImage, numTelString);
-
                 }
                 else if (lingua == "EN")
                 {
                     Console.Write(") Type the phone number that will be dialed(it won't be stored): +");
-                    numTelString = Console.ReadLine();
-                    numTel = new PhoneNumber(numTelString);
-                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(numTel, QRCodeGenerator.ECCLevel.Q);
-                    QRCode qrCode = new QRCode(qrCodeData);
-                    Bitmap qrCodeImage = qrCode.GetGraphic(20);
-                    SalvaQRcode(qrCodeImage, numTelString);
                 }
+                numTelString = Console.ReadLine();
+                numTel = new PhoneNumber(numTelString);
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(numTel, QRCodeGenerator.ECCLevel.Q);
+                QRCode qrCode = new QRCode(qrCodeData);
+                Bitmap qrCodeImage = qrCode.GetGraphic(20);
+                SalvaQRcode(qrCodeImage, numTelString);
             }
             else if (opz == "D4" || opz == "NumPad4")
             {
@@ -199,14 +192,13 @@ namespace Scriptool
                     {
                         Console.WriteLine("QR code created and saved to the defined path. Press Enter to go back to the main Menu");
                     }
+                    WiFiPW = null;  //svuota la password
+                    numTel = null;  //svuota il numero di tel
+                    numTelString = null; //svuota la string numero di tel
+                    Console.ReadLine();
+                    MenuPrint();
                 }
             }
-            WiFiPW = null;  //svuota la password
-            numTel = null;  //svuota il numero di tel
-            numTelString = null; //svuota la string numero di tel
-            Console.ReadLine();
-            MenuPrint();
-
         }
     }
 }

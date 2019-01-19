@@ -75,6 +75,7 @@ artifacts/
 *.vsp
 *.vspx
 *.sap
+*.sln
 
 # ReSharper is a .NET coding add-in
 _ReSharper*/
@@ -185,9 +186,6 @@ FakesAssemblies/
 
 # GhostDoc plugin setting file
 *.GhostDoc.xml
-
-# Node.js Tools for Visual Studio
-.ntvs_analysis.dat
 
 # Visual Studio 6 build log
 *.plg

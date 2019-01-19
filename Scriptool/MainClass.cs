@@ -139,24 +139,24 @@ namespace Scriptool
             Console.CursorSize = 1;
             if (lingua == "IT")
             {
-                options = new string[] { " 1) Genera un codice QR", " 2) Genera una password", " 3)", " 4)", " 5)", " 6)", " 7) Impostazioni", " 8) Esci" };
+                options = new string[] { " 1) Genera un codice QR", " 2) Genera una password", " 3) Scarica un video da Youtube", " 4)", " 5)", " 6)", " 7) Impostazioni", " 8) Esci" };
                 PrintOptMenu(options, titolo, "MenuPrint");
             }
             else if (lingua == "EN")
             {
-                options = new string[] { " 1) Generate a QR code", " 2) Generate a password", " 3)", " 4)", " 5)", " 6)", " 7) Settings", " 8) Exit" };
+                options = new string[] { " 1) Generate a QR code", " 2) Generate a password", " 3) Download a video from Youtube", " 4)", " 5)", " 6)", " 7) Settings", " 8) Exit" };
                 PrintOptMenu(options, titolo, "MenuPrint");
             }
         }
 
-        public static int PrintOptMenu(string[] opt, string title, string MethodId)  //opt per le opzioni da printare, string per scrivere un eventuale titolo, MethodIdentifier per indentificare da quale metodo viene chiamato
-        {
+        public static int PrintOptMenu(string[] opt, string staticText, string MethodId)  //opt per le opzioni da printare, staticText per scrivere un eventuale testo che non deve essere cancellato
+        {                                                                                 // MethodIdentifier per indentificare da quale metodo viene chiamato
             Console.CursorVisible = false;  //nascone il cursor (barretta bianca) per evitare glitch grafici
             int currentOpt = 0; //
             do
             {
                 Console.Clear();
-                Console.WriteLine(title);
+                Console.WriteLine(staticText);
                 for (int i = 0; i < opt.Length; i++)
                 {
                     if (i == currentOpt)
@@ -262,12 +262,6 @@ namespace Scriptool
                 }
             }
         }
-
-
-
-
-
-
 
 
         //               -----------FUNZIONI-----------

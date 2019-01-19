@@ -17,7 +17,7 @@ namespace Scriptool
 
         public static void ScegliQRcode()
         {
-            string titolo = "       _____           _       _              _      \n" +
+            string bufferPrecedente = "       _____           _       _              _      \n" +
                 "      /  ___|         (_)     | |            | |     \n" +
                 "      \\ `--.  ___ _ __ _ _ __ | |_ ___   ___ | |     \n" +
                 "       `--. \\/ __| '__| | '_ \\| __/ _ \\ / _ \\| |     \n" +
@@ -30,7 +30,7 @@ namespace Scriptool
 
             if (lingua == "IT") //ho fatto così se no la scritta scriptool e le opzioni del menu principale si sarebbero cancellati
             {
-                titolo += " 1) Genera un codice QR\n" +
+                bufferPrecedente += " 1) Genera un codice QR\n" +
                 " 2) Genera una password\n" +
                 " 3)\n" +
                 " 4)\n" +
@@ -42,7 +42,7 @@ namespace Scriptool
                 options = new string[]
                 {" 1) Testo/Link", " 2) Accesso automatico ad una rete WiFi", " 3) Chiama un numero di telefono\n" , " <-Ritorna al Menu principale\n" //opzione 4
                 };
-                MainClass.PrintOptMenu(options, titolo, "GeneraQRcode");
+                MainClass.PrintOptMenu(options, bufferPrecedente, "GeneraQRcode");
             }
             else if (lingua == "EN")
             {
@@ -58,7 +58,7 @@ namespace Scriptool
                 options = new string[]
                 {" 1) Text/Link" , " 2) Autoconnect to a WiFi", " 3) Dial a phone number\n" , " <-Go back to the main Menu\n" //opzione 4
                 };
-                MainClass.PrintOptMenu(options, titolo, "GeneraQRcode"); //la chiama per printare i vari tipi di codici qr
+                MainClass.PrintOptMenu(options, bufferPrecedente, "GeneraQRcode"); //la chiama per printare i vari tipi di codici qr
             }
 
         }

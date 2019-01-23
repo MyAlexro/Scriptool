@@ -220,8 +220,8 @@ namespace Scriptool
         }
 
 
-        //-----------SALVA IMPOSTAZIONI----------------
-        static void SalvaImpostazioni()  //salva le impostazioni, l'ho messo in una funzione a parte così da non dover scrivere ogni volta queste 2 righe
+        //-----------SALVA IMPOSTAZIONI----------------                                                                                                     ___
+        static void SalvaImpostazioni()  //salva le impostazioni, l'ho messo in una funzione a parte così da non dover scrivere ogni volta queste 2 righe  (°<°)meow
         {
             string[] impostazioniText = { lingua, apriQRcode, QRcodeFormat, defaultPath };
             System.IO.File.WriteAllLines($"{scriptoolPath}/Settings.txt", impostazioniText, Encoding.UTF8);

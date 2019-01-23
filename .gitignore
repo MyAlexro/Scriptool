@@ -75,7 +75,7 @@ artifacts/
 *.vsp
 *.vspx
 *.sap
-*.sln
+.sln
 
 # ReSharper is a .NET coding add-in
 _ReSharper*/

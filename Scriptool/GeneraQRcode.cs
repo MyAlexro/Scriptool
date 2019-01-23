@@ -63,7 +63,7 @@ namespace Scriptool
 
         }
         
-        //genera un codice qr che restituisce un link o del testo
+        //--------genera un codice qr che restituisce un link o del testo-----------
         public static void TestoLinkQRcode()
         {
             if (lingua == "IT")
@@ -74,14 +74,14 @@ namespace Scriptool
             {
                 Console.Write("  1: Write the text/link you want to convert: ");
             }
-            string testo_Link = Console.ReadLine();  //prende il testo/link da convertire inserito dall'utente
+            string testo_Link = Console.ReadLine(); 
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(testo_Link, QRCodeGenerator.ECCLevel.Q);  //object contenente dati da convertire in codice QR
             QRCode qrCode = new QRCode(qrCodeData);  //converte i dati in un codice QR
             Bitmap qrCodeImage = qrCode.GetGraphic(20);  //renderizza l'immagine del codice QR
             SalvaQRcode(qrCodeImage, testo_Link); //richiama la funzione SalvaQRcode passando i parametri necessari
         }
 
-        //genera un codice qr che si autoconnette ad una rete wifi
+        //------------genera un codice qr che si autoconnette ad una rete wifi---------
         public static void WiFiQRcode()
         {
             string WiFiSSID; //nome della rete
@@ -132,7 +132,7 @@ namespace Scriptool
             }
         }
 
-        //genera il codice qr che chiama un numero di tel
+        //--------genera il codice qr che chiama un numero di tel--------
         public static void PhoneNumQRcode()
         {
             if (lingua == "IT")
@@ -151,7 +151,7 @@ namespace Scriptool
             SalvaQRcode(qrCodeImage, numTelString); //ho messo numTelString come NomeQRcode
         }
 
-        //torna indietro
+        //-----torna indietro-------
         public static void Indietro()
         {
             MenuPrint();
@@ -159,10 +159,10 @@ namespace Scriptool
 
 
 
-        //salva il codice qr
+        //---------salva il codice qr-----------
         public static void SalvaQRcode(Bitmap qrCodeImage, string NomeQRcode)
         {
-            if (!Directory.Exists(defaultPath)) //se la cartella dove salvare i codici QR non esiste(perchè è stata eliminata o rinominata) non genera il codice e da questo errore
+            if (!Directory.Exists(defaultPath))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 if (lingua == "IT")

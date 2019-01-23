@@ -21,7 +21,7 @@ namespace Scriptool
         [STAThread]
         static void Main(string[] args)
         {
-            if (!System.IO.File.Exists($"{scriptoolPath}/Settings.txt"))   //se il txt delle impostazioni non esiste
+            if (!System.IO.File.Exists($"{scriptoolPath}/Settings.txt"))
             {
                 Setup();
             }
@@ -69,7 +69,7 @@ namespace Scriptool
         static void StartUp()
         {
             Console.Clear();
-            Console.Title = "Scriptool"; //titolo finestra scriptool
+            Console.Title = "Scriptool"; 
             Console.SetWindowSize(120, 30); //imposta grandezza ottimale della finestra
             Console.SetBufferSize(120, 9000); //imposta grandezza ottimale del buffer della finestra
 
@@ -139,12 +139,12 @@ namespace Scriptool
             Console.CursorSize = 1;
             if (lingua == "IT")
             {
-                options = new string[] { " 1) Genera un codice QR", " 2) Genera una password", " 3) Scarica un video da Youtube", " 4)", " 5)", " 6)", " 7) Impostazioni", " 8) Esci" };
+                options = new string[] { " 1) Genera un codice QR", " 2) Genera una password", " 3)", " 4)", " 5)", " 6)", " 7) Impostazioni", " 8) Esci" };
                 PrintOptMenu(options, titolo, "MenuPrint");
             }
             else if (lingua == "EN")
             {
-                options = new string[] { " 1) Generate a QR code", " 2) Generate a password", " 3) Download a video from Youtube", " 4)", " 5)", " 6)", " 7) Settings", " 8) Exit" };
+                options = new string[] { " 1) Generate a QR code", " 2) Generate a password", " 3)", " 4)", " 5)", " 6)", " 7) Settings", " 8) Exit" };
                 PrintOptMenu(options, titolo, "MenuPrint");
             }
         }
@@ -152,7 +152,7 @@ namespace Scriptool
         public static int PrintOptMenu(string[] opt, string staticText, string MethodId)  //opt per le opzioni da printare, staticText per scrivere un eventuale testo che non deve essere cancellato
         {                                                                                 // MethodIdentifier per indentificare da quale metodo viene chiamato
             Console.CursorVisible = false;  //nascone il cursor (barretta bianca) per evitare glitch grafici
-            int currentOpt = 0; //
+            int currentOpt = 0; 
             do
             {
                 Console.Clear();
@@ -266,11 +266,11 @@ namespace Scriptool
 
         //               -----------FUNZIONI-----------
 
-        //----Genera codice QR----
+        //----Genera codice QR----//
 
 
 
-        //----Genera password----
+        //----Genera password----//
         static void GeneraPW()
         {
             string characs = "ABCDEFGHIJKLMONPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789èé&?!@"; //caratteri disponibili per generare la password
@@ -286,9 +286,9 @@ namespace Scriptool
 
             try //ho messo il try per prevenire il crash del programma se l'input è maggiore del limite e quindi causa un Overflow e se l'input non è numerico quindi causa un FormatException
             {
-                int lunghezza = Convert.ToByte(Console.ReadLine()); //converte l'input in byte
+                int lunghezza = Convert.ToByte(Console.ReadLine());
 
-                if (lunghezza == 0)  //se la lunghezza è 0
+                if (lunghezza == 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     if (lingua == "IT")
@@ -303,7 +303,7 @@ namespace Scriptool
                     Console.Clear();
                     MenuPrint();
                 }
-                else  //se no prosegue a generare la PW
+                else
                 {
                     char[] password = new char[lunghezza];
                     for (int i = 0; i < lunghezza; i++)
@@ -312,8 +312,7 @@ namespace Scriptool
                     }
                     if (lingua == "IT")
                     {
-                        Console.Write("\nPassword generata: ");
-                        Console.WriteLine(password); //va scritto in un writeline diverso se no non funziona, idk
+                        Console.WriteLine($"\nPassword generata: {new string(password)}"); //new string per convertire da array a string
                         Console.WriteLine("\nPremi Invio per tornare al Menu principale");
                     }
                     else if (lingua == "EN")
@@ -340,7 +339,7 @@ namespace Scriptool
                 }
                 Console.ReadLine();
                 Console.Clear();
-                MenuPrint();  //richiama la funzione MenuPrint()
+                MenuPrint();
             }
             catch (FormatException) //l'input non è numerico quindi causa un FormatException
             {
@@ -355,38 +354,35 @@ namespace Scriptool
                 }
                 Console.ReadLine();
                 Console.Clear();
-                MenuPrint();  //richiama la funzione MenuPrint()
+                MenuPrint();
             }
         }
 
-        //_____________________________________________________________________________________________________________________________________________________________//
-        //OPTION 3
+        //----OPTION 3----//
         static void Option3()
         {
             Console.WriteLine(": ");
         }
 
-        //_____________________________________________________________________________________________________________________________________________________________//
-        //OPTION 4
+        //----OPTION 4----//
         static void Option4()
         {
             Console.WriteLine(": ");
         }
 
-        //_____________________________________________________________________________________________________________________________________________________________//
-        //OPTION 5
+        //----OPTION 5----//
         static void Option5()
         {
             Console.WriteLine(": ");
         }
 
-        //_____________________________________________________________________________________________________________________________________________________________//
-        //OPTION 6
+        //----OPTION 6----//
         static void Option6()
         {
             Console.WriteLine(": ");
         }
 
+        //----Impostazioni----//
 
         static void Esci()
         {

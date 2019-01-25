@@ -172,7 +172,7 @@ namespace Scriptool
                         else if (currentOpt == 0) currentOpt = opt.Length - 1;  //se si è alla prima opzione e si va in su si va all'ultima opzione
                         break;
                     case "DownArrow":
-                        if (currentOpt < opt.Length - 1) currentOpt++;
+                        if (currentOpt < opt.Length - 1) currentOpt++; //per scendere nel menu
                         else if (currentOpt == opt.Length - 1) currentOpt = 0;  //se si è all'ultima opzione e si va ancora in giù si va alla prima opzione
                         break;
                     case "Enter":

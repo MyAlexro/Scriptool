@@ -138,12 +138,12 @@ namespace Scriptool
             Console.CursorSize = 1;
             if (lingua == "IT")
             {
-                options = new string[] { " 1) Genera un codice QR", " 2) Genera una password", " 3)", " 4)", " 5)", " 6)", " 7) Impostazioni", " 8) Esci" };
+                options = new string[] { " 1) Genera un codice QR", " 2) Genera una password", " 3)", " 4)", " 5)", " 6)", " 7) Impostazioni", " 8) Esci"};
                 PrintOptMenu(options, titolo, "MenuPrint");
             }
             else if (lingua == "EN")
             {
-                options = new string[] { " 1) Generate a QR code", " 2) Generate a password", " 3)", " 4)", " 5)", " 6)", " 7) Settings", " 8) Exit" };
+                options = new string[] { " 1) Generate a QR code", " 2) Generate a password", " 3)", " 4)", " 5)", " 6)", " 7) Settings", " 8) Exit"};
                 PrintOptMenu(options, titolo, "MenuPrint");
             }
         }

@@ -75,7 +75,7 @@ namespace Scriptool
 
             string[] line = new string[4]; // !-------PER AGGIUNGERE IMPOSTAZIONI AUMENTARE IL NUMERO DELL'ARRAY--------!
             int counter = 0;
-            System.IO.StreamReader StrRe = new System.IO.StreamReader($"{scriptoolPath}/Settings.txt");  //inizializza uno StreamReader
+            StreamReader StrRe = new StreamReader($"{scriptoolPath}/Settings.txt");  //inizializza uno StreamReader
             foreach (string lineNumber in File.ReadLines($"{scriptoolPath}/Settings.txt")) //per ogni linea nel file Settings.txt
             {
                 line[counter] = StrRe.ReadLine(); //La linea[1] è uguale a *linea 1 nel file txt*, la linea[2] è uguale a *linea 2 nel file txt*, la linea[3] è uguale a *linea 3 nel file txt*
@@ -114,7 +114,6 @@ namespace Scriptool
                 {
                     defaultPath = line[3];
                 }
-
             }
             StrRe.Close(); //chiude la stream reader StrRe così da, eventualmente, poterci scrivere dopo
         }

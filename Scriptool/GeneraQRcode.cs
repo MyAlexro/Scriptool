@@ -2,6 +2,7 @@
 using System.IO;
 using QRCoder;
 using System.Drawing;
+using System.Windows.Forms;
 using static QRCoder.PayloadGenerator;
 using static Scriptool.MainClass;
 
@@ -14,6 +15,8 @@ namespace Scriptool
         public static PhoneNumber numTel = null; //numero di telefono (stesso motivo per sopra)
         public static string numTelString = null; //numero di telefono in string (stesso motivo sopra)
         public static QRCodeGenerator qrGenerator = new QRCodeGenerator(); //inizializza il generatore di codici QR
+        public static char[] InvalidChars = Path.GetInvalidFileNameChars(); //lettere non valide con cui nominare un file
+        public static bool containsInvalid = false;
 
         public static void ScegliQRcode()
         {
@@ -62,7 +65,7 @@ namespace Scriptool
             }
 
         }
-        
+
         //--------genera un codice qr che restituisce un link o del testo-----------
         public static void TestoLinkQRcode()
         {
@@ -74,7 +77,7 @@ namespace Scriptool
             {
                 Console.Write("  1: Write the text/link you want to convert: ");
             }
-            string testo_Link = Console.ReadLine(); 
+            string testo_Link = @Console.ReadLine();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(testo_Link, QRCodeGenerator.ECCLevel.Q);  //object contenente dati da convertire in codice QR
             QRCode qrCode = new QRCode(qrCodeData);  //converte i dati in un codice QR
             Bitmap qrCodeImage = qrCode.GetGraphic(20);  //renderizza l'immagine del codice QR
@@ -162,7 +165,7 @@ namespace Scriptool
         //---------salva il codice qr-----------
         public static void SalvaQRcode(Bitmap qrCodeImage, string NomeQRcode)
         {
-            if (!Directory.Exists(defaultPath))
+            if (!Directory.Exists(defaultPath)) //se non esiste la path dove salvare i codici
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 if (lingua == "IT")
@@ -180,11 +183,42 @@ namespace Scriptool
             {
                 if (QRcodeFormat == "JPEG") //se l'impostazione per il formato con cui formare il QR code è JPEG
                 {
-                    qrCodeImage.Save($"{defaultPath}/{NomeQRcode}.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                    for (int i = 0; i <= InvalidChars.Length - 1; i++)
+                    {
+                        if (NomeQRcode.Contains(InvalidChars[i].ToString())) //se il nome scelto dall'utente contiene caratteri non validi
+                        {
+                            containsInvalid = true;
+                            break;
+                        }
+                    }
+                    if (containsInvalid)//se quindi contiene caratteri non validi
+                    {
+                        qrCodeImage.Save($"{defaultPath}/InvalidName.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                    }
+                    else //se non li contiene
+                    {
+                        qrCodeImage.Save($"{defaultPath}/{NomeQRcode}.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                    }
+
                 }
-                else if (QRcodeFormat == "PNG") //se invece è uguale a PNG
+                else if (QRcodeFormat == "PNG") //se invece l'impostazione è PNG
                 {
-                    qrCodeImage.Save($"{defaultPath}/{NomeQRcode}.png", System.Drawing.Imaging.ImageFormat.Png);
+                    for (int i = 0; i <= InvalidChars.Length - 1;i++)
+                    {
+                        if (NomeQRcode.Contains(InvalidChars[i].ToString())) //se il nome scelto dall'utente contiene caratteri non validi
+                        {
+                            containsInvalid = true;
+                            break;
+                        }
+                    }
+                    if (containsInvalid) //se quindi contiene caratteri non validi
+                    {
+                        qrCodeImage.Save($"{defaultPath}/InvalidName.png", System.Drawing.Imaging.ImageFormat.Png);
+                    }
+                    else //se non li contiene
+                    {
+                        qrCodeImage.Save($"{defaultPath}/{NomeQRcode}.png", System.Drawing.Imaging.ImageFormat.Png);
+                    }
                 }
                 if (apriQRcode == "Y")  //se la preferenza/impostazione apriQRcode è uguale a Y apre il qr e scrive 
                 {

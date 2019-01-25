@@ -23,8 +23,8 @@ SOFTWARE.
 
 _________________________________________________________________________________________
 
-
-This software includes the API QRCoder: Copyright (c) 2013-2018 Raffael Herrmann
+QRCoder API: https://github.com/codebude/QRCoder
+This software makes use of the API "QRCoder": Copyright (c) 2013-2018 Raffael Herrmann
 
 The MIT License (MIT)
 

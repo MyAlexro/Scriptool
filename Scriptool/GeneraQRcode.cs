@@ -10,17 +10,23 @@ namespace Scriptool
 {
     class GeneraQRcode
     {
+        //li ho messi qua così da poterli nullare
+        static string bufferPrecedente;
+        static string testo_Link;
+        static string WiFiPW = null; //Password della rete WiFi
+        static PhoneNumber numTel = null; //numero di telefono
+        static string numTelString = null; //numero di telefono in string
+        static QRCodeGenerator qrGenerator;
+        static QRCodeData qrCodeData;
+        static QRCode qrCode;
+        static Bitmap qrCodeImage;
 
-        public static string WiFiPW = null; //Password della rete WiFi (l'ho messa public così da poterla svuotare dopo aver generato il codice qr)
-        public static PhoneNumber numTel = null; //numero di telefono (stesso motivo per sopra)
-        public static string numTelString = null; //numero di telefono in string (stesso motivo sopra)
-        public static QRCodeGenerator qrGenerator = new QRCodeGenerator(); //inizializza il generatore di codici QR
-        public static char[] InvalidChars = Path.GetInvalidFileNameChars(); //lettere non valide con cui nominare un file
-        public static bool containsInvalid = false;
+        static char[] InvalidChars = Path.GetInvalidFileNameChars(); //lettere non valide con cui nominare un file
+        static bool containsInvalid = false; //serve per settare se il nome del codice qr contiene caratteri non validi
 
         public static void ScegliQRcode()
         {
-            string bufferPrecedente = "       _____           _       _              _      \n" +
+                bufferPrecedente = "       _____           _       _              _      \n" +
                 "      /  ___|         (_)     | |            | |     \n" +
                 "      \\ `--.  ___ _ __ _ _ __ | |_ ___   ___ | |     \n" +
                 "       `--. \\/ __| '__| | '_ \\| __/ _ \\ / _ \\| |     \n" +
@@ -43,7 +49,7 @@ namespace Scriptool
                 " 8) Esci\n" +
                 "\n1: Seleziona il tipo di codice QR da generare:\n";
                 options = new string[]
-                {" 1) Testo/Link", " 2) Accesso automatico ad una rete WiFi", " 3) Chiama un numero di telefono\n" , " <-Ritorna al Menu principale\n" //opzione 4
+                {" 1) Testo/Link", " 2) Accesso automatico ad una rete WiFi", " 3) Chiama un numero di telefono\n" , "<-Ritorna al Menu principale\n" //opzione 4
                 };
                 MainClass.PrintOptMenu(options, bufferPrecedente, "GeneraQRcode");
             }
@@ -59,7 +65,7 @@ namespace Scriptool
                           " 8) Exit\n" +
                           "\n1: Select the type of QR code you want to generate:\n";
                 options = new string[]
-                {" 1) Text/Link" , " 2) Autoconnect to a WiFi", " 3) Dial a phone number\n" , " <-Go back to the main Menu\n" //opzione 4
+                {" 1) Text/Link" , " 2) Autoconnect to a WiFi", " 3) Dial a phone number\n" , "<-Go back to the main Menu\n" //opzione 4
                 };
                 MainClass.PrintOptMenu(options, bufferPrecedente, "GeneraQRcode"); //la chiama per printare i vari tipi di codici qr
             }
@@ -77,11 +83,14 @@ namespace Scriptool
             {
                 Console.Write("  1: Write the text/link you want to convert: ");
             }
-            string testo_Link = @Console.ReadLine();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(testo_Link, QRCodeGenerator.ECCLevel.Q);  //object contenente dati da convertire in codice QR
-            QRCode qrCode = new QRCode(qrCodeData);  //converte i dati in un codice QR
-            Bitmap qrCodeImage = qrCode.GetGraphic(20);  //renderizza l'immagine del codice QR
+            testo_Link = @Console.ReadLine();
+            qrGenerator = new QRCodeGenerator();
+            qrCodeData = qrGenerator.CreateQrCode(testo_Link, QRCodeGenerator.ECCLevel.Q);  //object contenente dati da convertire in codice QR
+            qrCode = new QRCode(qrCodeData);  //converte i dati in un codice QR
+            qrCodeImage = qrCode.GetGraphic(20);  //renderizza l'immagine del codice QR
             SalvaQRcode(qrCodeImage, testo_Link); //richiama la funzione SalvaQRcode passando i parametri necessari
+            testo_Link = null;
+            Console.WriteLine("testo:" + testo_Link);
         }
 
         //------------genera un codice qr che si autoconnette ad una rete wifi---------
@@ -93,7 +102,7 @@ namespace Scriptool
             {
                 Console.Write("  2: Inserisci il nome della rete WiFi a cui connettersi: ");
                 WiFiSSID = Console.ReadLine();
-                Console.Write("     Inserisci la password della rete WiFi(non verrà conservata):");
+                Console.Write("     Inserisci la password della rete WiFi(non verrà conservata): ");
                 WiFiPW = Console.ReadLine();
                 if (WiFiSSID == "")
                 {
@@ -105,9 +114,10 @@ namespace Scriptool
                 else
                 {
                     WiFiGen = new WiFi(WiFiSSID, WiFiPW, WiFi.Authentication.WPA); // !!!!!WiFi.Authentication.WPA include sia WPA che WPA2!!!!!
-                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(WiFiGen, QRCodeGenerator.ECCLevel.Q); //object contenente tutti i dati da convertire 
-                    QRCode qrCode = new QRCode(qrCodeData); //converte i dati
-                    Bitmap qrCodeImage = qrCode.GetGraphic(20);  //renderizza l'mmagine 
+                    qrGenerator = new QRCodeGenerator();
+                    qrCodeData = qrGenerator.CreateQrCode(WiFiGen, QRCodeGenerator.ECCLevel.Q); //object contenente tutti i dati da convertire 
+                    qrCode = new QRCode(qrCodeData); //converte i dati
+                    qrCodeImage = qrCode.GetGraphic(20);  //renderizza l'mmagine 
                     SalvaQRcode(qrCodeImage, WiFiSSID);   //richiama la funzione SalvaQRcode passando i parametri necessari (passa il WiFISSID cosi salva il codice QR con il nome della rete)
                 }
             }
@@ -127,9 +137,10 @@ namespace Scriptool
                 else
                 {
                     WiFiGen = new WiFi(WiFiSSID, WiFiPW, WiFi.Authentication.WPA);
-                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(WiFiGen, QRCodeGenerator.ECCLevel.Q);
-                    QRCode qrCode = new QRCode(qrCodeData);
-                    Bitmap qrCodeImage = qrCode.GetGraphic(20);
+                    qrGenerator = new QRCodeGenerator();
+                    qrCodeData = qrGenerator.CreateQrCode(WiFiGen, QRCodeGenerator.ECCLevel.Q);
+                    qrCode = new QRCode(qrCodeData);
+                    qrCodeImage = qrCode.GetGraphic(20);
                     SalvaQRcode(qrCodeImage, WiFiSSID);
                 }
             }
@@ -148,9 +159,10 @@ namespace Scriptool
             }
             numTelString = Console.ReadLine();
             numTel = new PhoneNumber(numTelString); //inizializza l'object PhoneNumber dalla string numTelString
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(numTel, QRCodeGenerator.ECCLevel.Q); //converte l'object in dati del qrcode
-            QRCode qrCode = new QRCode(qrCodeData); //genera il codice qr
-            Bitmap qrCodeImage = qrCode.GetGraphic(20); //prende l'immagine 
+            qrGenerator = new QRCodeGenerator();
+            qrCodeData = qrGenerator.CreateQrCode(numTel, QRCodeGenerator.ECCLevel.Q); //converte l'object in dati del qrcode
+            qrCode = new QRCode(qrCodeData); //genera il codice qr
+            qrCodeImage = qrCode.GetGraphic(20); //prende l'immagine 
             SalvaQRcode(qrCodeImage, numTelString); //ho messo numTelString come NomeQRcode
         }
 
@@ -181,73 +193,63 @@ namespace Scriptool
             }
             else if (Directory.Exists(defaultPath))  //se invece esiste
             {
+                for (int i = 0; i <= InvalidChars.Length - 1; i++)
+                {
+                    if (NomeQRcode.Contains(InvalidChars[i].ToString())) //controlla se nel nome ci sono caratteri non validi
+                    {
+                        containsInvalid = true;
+                        break;
+     
+                    }
+                }
                 if (QRcodeFormat == "JPEG") //se l'impostazione per il formato con cui formare il QR code è JPEG
                 {
-                    for (int i = 0; i <= InvalidChars.Length - 1; i++)
-                    {
-                        if (NomeQRcode.Contains(InvalidChars[i].ToString())) //se il nome scelto dall'utente contiene caratteri non validi
-                        {
-                            containsInvalid = true;
-                            break;
-                        }
-                    }
-                    if (containsInvalid)//se quindi contiene caratteri non validi
+                    if (containsInvalid || NomeQRcode.Length >= 248)//se contiene caratteri non validi o il nome del codice QR è troppo lungo
                     {
                         qrCodeImage.Save($"{defaultPath}/InvalidName.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
                     }
-                    else //se non li contiene
+                    else
                     {
                         qrCodeImage.Save($"{defaultPath}/{NomeQRcode}.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
                     }
-
                 }
                 else if (QRcodeFormat == "PNG") //se invece l'impostazione è PNG
                 {
-                    for (int i = 0; i <= InvalidChars.Length - 1;i++)
-                    {
-                        if (NomeQRcode.Contains(InvalidChars[i].ToString())) //se il nome scelto dall'utente contiene caratteri non validi
-                        {
-                            containsInvalid = true;
-                            break;
-                        }
-                    }
-                    if (containsInvalid) //se quindi contiene caratteri non validi
+                    if (containsInvalid)//se quindi contiene caratteri non validi
                     {
                         qrCodeImage.Save($"{defaultPath}/InvalidName.png", System.Drawing.Imaging.ImageFormat.Png);
                     }
-                    else //se non li contiene
+                    else
                     {
                         qrCodeImage.Save($"{defaultPath}/{NomeQRcode}.png", System.Drawing.Imaging.ImageFormat.Png);
                     }
                 }
-                if (apriQRcode == "Y")  //se la preferenza/impostazione apriQRcode è uguale a Y apre il qr e scrive 
+                if (lingua == "IT")
+                {
+                    Console.WriteLine("\nCodice QR generato e salvato nella cartella predefinita. Premere invio per tornare al Menu principale");
+                }
+                else if (lingua == "EN")
+                {
+                    Console.WriteLine("\nQR code generated and saved to the defined path. Press Enter to go back to the main Menu");
+                }
+                if (apriQRcode == "Y")  //se l'impostazione apriQRcode è uguale a Y apre il codice QR
                 {
                     System.Diagnostics.Process.Start($"{defaultPath}/{NomeQRcode}.jpeg");
-                    if (lingua == "IT")
-                    {
-                        Console.WriteLine("Codice QR generato e salvato nella cartella predefinita. Premere invio per tornare al Menu principale");
-                    }
-                    else if (lingua == "EN")
-                    {
-                        Console.WriteLine("QR code generated and saved to the defined path. Press Enter to go back to the main Menu");
-                    }
                 }
-                else  // scrive solo che è stato creato sul desktop
-                {
-                    if (lingua == "IT")
-                    {
-                        Console.WriteLine("Codice QR generato e salvato nella cartella predefinita. Premere invio per tornare al Menu principale");
-                    }
-                    else if (lingua == "EN")
-                    {
-                        Console.WriteLine("QR code created and saved to the defined path. Press Enter to go back to the main Menu");
-                    }
-                    WiFiPW = null;  //svuota la password
-                    numTel = null;  //svuota il numero di tel
-                    numTelString = null; //svuota la string numero di tel
-                    Console.ReadLine();
-                    MenuPrint();
-                }
+                //li metto a null per far sì che il garbage collector svuoti la memoria cancellandoli
+                WiFiPW = null;
+                numTel = null;
+                numTelString = null;
+                testo_Link = null;
+                qrCodeData = null;
+                qrGenerator = null;
+                qrCodeData = null;
+                qrCodeImage = null;
+                bufferPrecedente = null;
+                GC.Collect();
+
+                Console.ReadLine();
+                MenuPrint();
             }
         }
     }

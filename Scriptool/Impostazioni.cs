@@ -15,7 +15,7 @@ namespace Scriptool
             {
                 options = new string[]
                 { $" 1) Lingua: {lingua}", $" 2) Apri il codice QR dopo la creazione: {apriQRcode}" ,
-                 $" 3) Salva i codici QR con il formato: {QRcodeFormat}",$" 4) Salva i codici QR nella cartella: {defaultPath}\n\n",$" <-Torna indietro\n\n" //opzione 4
+                 $" 3) Salva i codici QR con il formato: {QRcodeFormat}",$" 4) Salva i codici QR nella cartella: {defaultPath}\n\n",$"<-Torna indietro\n\n" //opzione 4
                 };
                 titolo = "  _____                           _            _             _ \n" +
                          " |_   _|                         | |          (_)           (_) \n" +
@@ -35,7 +35,7 @@ namespace Scriptool
             {
                 options = new string[]
                 { $" 1) Language: {lingua}", $" 2) Open the QR code after it has been created: {apriQRcode}",
-                  $" 3) Save QR codes with the extension: {QRcodeFormat}",$" 4) Save QR codes to path: {defaultPath}\n\n", $" <-Go back\n\n" //opzione 4
+                  $" 3) Save QR codes with the extension: {QRcodeFormat}",$" 4) Save QR codes to path: {defaultPath}\n\n", $"<-Go back\n\n" //opzione 4
                 };
                 titolo = "   _____      _   _   _                 \n" +
                                "  / ____|    | | | | (_)                \n" +

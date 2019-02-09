@@ -1,5 +1,6 @@
 # Scriptool
-Scriptool is a Console application, written in C#, with a mix of functions
+Scriptool is a Console application, written in C#, with a some useful functions:
+
 
 
 ## Generate a QR code

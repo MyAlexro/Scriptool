@@ -244,7 +244,7 @@ namespace Scriptool
                     Console.WriteLine($"Download del video iniziato {startTime}, verrà salvato nella cartella predefinita. Non chiudere il programma!");
                     Console.Write("Download in corso...");
                 }
-                else if (lingua == "EN")
+                else if (lingua == "EN") 
                 {
                     Console.WriteLine($"Download of the video started {startTime}, it'll be saved in the defined folder. Please don't close the program!");
                     Console.Write("Downlading...");

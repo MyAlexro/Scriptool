@@ -7,20 +7,20 @@
 *.userosscache
 *.sln.docstates
 *.sln
-.sln
+Scriptool.sln
 
 # User-specific files (MonoDevelop/Xamarin Studio) 
 *.userprefs
  
 # Build results
-[Dd]ebug/
+Debug/
 # [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
 x64/
 x86/
 bld/
-[Bb]in/
+bin/
 [Oo]bj/
 [Ll]og/
 

@@ -1,5 +1,6 @@
 # Scriptool
-Scriptool is a Console application, written in C#, with a mix of functions
+Scriptool is a Console application, written in C#, with a some useful functions:
+
 
 
 ## Generate a QR code
@@ -17,5 +18,5 @@ Given the lenght of the password, the software will generate one. The password c
 ## Download a video from Youtube
 Insert the link of a Youtube video and the software will download it
 
-**At the moment the software can download __only__ HD 720p videos!**
+**At the moment the software can download HD 720p videos _only_!**
 

@@ -246,7 +246,7 @@ namespace Scriptool
                 }
                 else if (lingua == "EN")
                 {
-                    Console.WriteLine($"Download of the video started {startTime}, it'll be saved in the defined folder. Don't close the program!");
+                    Console.WriteLine($"Download of the video started {startTime}, it'll be saved in the defined folder. Please don't close the program!");
                     Console.Write("Downlading...");
                 }
                 while (downloadFinished == false)
@@ -288,7 +288,6 @@ namespace Scriptool
                 MenuPrint();
             }
         }
-
 
 
         static void DownloadCompletedAsync(object sender, AsyncCompletedEventArgs e)

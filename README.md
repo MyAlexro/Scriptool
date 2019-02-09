@@ -15,4 +15,7 @@ Given the lenght of the password, the software will generate one. The password c
 
 
 ## Download a video from Youtube
-Coming soon...
+Insert the link of a Youtube video and the software will download it
+
+**At the moment the software can download __only__ HD 720p videos!**
+

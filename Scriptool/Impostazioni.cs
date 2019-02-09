@@ -7,6 +7,8 @@ namespace Scriptool
 {
     class Impostazioni
     {
+
+        static public string QR_VideoPath = "";
         public static void PrintImpostazioni()  //Reminder: Per aggiungere/togliere un'impostazione bisogna modificare anche l'array string "line" nella funzione StartUp
         {
             Console.Clear();
@@ -15,7 +17,8 @@ namespace Scriptool
             {
                 options = new string[]
                 { $" 1) Lingua: {lingua}", $" 2) Apri il codice QR dopo la creazione: {apriQRcode}" ,
-                 $" 3) Salva i codici QR con il formato: {QRcodeFormat}",$" 4) Salva i codici QR nella cartella: {defaultPath}\n\n",$"<-Torna indietro\n\n" //opzione 4
+                  $" 3) Salva i codici QR con il formato: {QRcodeFormat}",$" 4) Salva i codici QR nella cartella: {defaultQrPath}",$" 5) Salva i video nella cartella: {defaultVideoPath}\n\n",
+                  $"<-Torna indietro\n\n"
                 };
                 titolo = "  _____                           _            _             _ \n" +
                          " |_   _|                         | |          (_)           (_) \n" +
@@ -35,7 +38,8 @@ namespace Scriptool
             {
                 options = new string[]
                 { $" 1) Language: {lingua}", $" 2) Open the QR code after it has been created: {apriQRcode}",
-                  $" 3) Save QR codes with the extension: {QRcodeFormat}",$" 4) Save QR codes to path: {defaultPath}\n\n", $"<-Go back\n\n" //opzione 4
+                  $" 3) Save QR codes with the extension: {QRcodeFormat}",$" 4) Save QR codes to the path: {defaultQrPath}\n\n",$" 5) Save videos to the path: {defaultVideoPath}\n\n",
+                  $"<-Go back\n\n"
                 };
                 titolo = "   _____      _   _   _                 \n" +
                                "  / ____|    | | | | (_)                \n" +
@@ -194,6 +198,7 @@ namespace Scriptool
         //---------------PATH DOVE SALVARE I CODICI QR???????------------------
         public static void PathSalvaQRcode()
         {
+            QR_VideoPath = "QRpath";
             Application.Run(new Form1()); //apre il Form1
             if (Form1.ActiveForm == null) //se il form non è aperto(quindi se è stato chiuso)
             {
@@ -204,6 +209,27 @@ namespace Scriptool
                 else if (lingua == "EN")
                 {
                     Console.WriteLine("4: Path updated, press Enter to go back to the main Menu");
+                }
+                SalvaImpostazioni();
+                Console.ReadKey();
+                MenuPrint();
+            }
+        }
+
+        //---------------PATH DOVE SALVARE I VIDEO???????------------------
+        public static void PathSalvaVideo()
+        {
+            QR_VideoPath = "Videopath";
+            Application.Run(new Form1()); //apre il Form1
+            if (Form1.ActiveForm == null) //se il form non è aperto(quindi se è stato chiuso)
+            {
+                if (lingua == "IT")
+                {
+                    Console.WriteLine("5: Cartella aggiornata, premere Invio per tornare al Menu principale");
+                }
+                else if (lingua == "EN")
+                {
+                    Console.WriteLine("5: Path updated, press Enter to go back to the main Menu");
                 }
                 SalvaImpostazioni();
                 Console.ReadKey();
@@ -223,7 +249,7 @@ namespace Scriptool
         //-----------SALVA IMPOSTAZIONI----------------                                                                                                     ___
         static void SalvaImpostazioni()  //salva le impostazioni, l'ho messo in una funzione a parte così da non dover scrivere ogni volta queste 2 righe  (°<°)meow
         {
-            string[] impostazioniText = { lingua, apriQRcode, QRcodeFormat, defaultPath };
+            string[] impostazioniText = { lingua, apriQRcode, QRcodeFormat, defaultQrPath, defaultVideoPath };
             System.IO.File.WriteAllLines($"{scriptoolPath}/Settings.txt", impostazioniText, Encoding.UTF8);
         }
     }

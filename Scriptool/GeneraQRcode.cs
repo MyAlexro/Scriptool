@@ -2,7 +2,6 @@
 using System.IO;
 using QRCoder;
 using System.Drawing;
-using System.Windows.Forms;
 using static QRCoder.PayloadGenerator;
 using static Scriptool.MainClass;
 
@@ -49,7 +48,7 @@ namespace Scriptool
                 " 8) Esci\n" +
                 "\n1: Seleziona il tipo di codice QR da generare:\n";
                 options = new string[]
-                {" 1) Testo/Link", " 2) Accesso automatico ad una rete WiFi", " 3) Chiama un numero di telefono\n" , "<-Ritorna al Menu principale\n" //opzione 4
+                {" 1) Testo/Link", " 2) Accesso automatico ad una rete WiFi", " 3) Chiama un numero di telefono\n" , "<-Ritorna indietro\n" //opzione 4
                 };
                 MainClass.PrintOptMenu(options, bufferPrecedente, "GeneraQRcode");
             }
@@ -65,7 +64,7 @@ namespace Scriptool
                           " 8) Exit\n" +
                           "\n1: Select the type of QR code you want to generate:\n";
                 options = new string[]
-                {" 1) Text/Link" , " 2) Autoconnect to a WiFi", " 3) Dial a phone number\n" , "<-Go back to the main Menu\n" //opzione 4
+                {" 1) Text/Link" , " 2) Autoconnect to a WiFi", " 3) Dial a phone number\n" , "<-Go back\n" //opzione 4
                 };
                 MainClass.PrintOptMenu(options, bufferPrecedente, "GeneraQRcode"); //la chiama per printare i vari tipi di codici qr
             }
@@ -177,7 +176,7 @@ namespace Scriptool
         //---------salva il codice qr-----------
         public static void SalvaQRcode(Bitmap qrCodeImage, string NomeQRcode)
         {
-            if (!Directory.Exists(defaultPath)) //se non esiste la path dove salvare i codici
+            if (!Directory.Exists(defaultQrPath)) //se non esiste la path dove salvare i codici
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 if (lingua == "IT")
@@ -191,7 +190,7 @@ namespace Scriptool
                 Console.ReadKey();
                 MenuPrint();
             }
-            else if (Directory.Exists(defaultPath))  //se invece esiste
+            else if (Directory.Exists(defaultQrPath))  //se invece esiste
             {
                 for (int i = 0; i <= InvalidChars.Length - 1; i++)
                 {
@@ -206,22 +205,22 @@ namespace Scriptool
                 {
                     if (containsInvalid || NomeQRcode.Length >= 248)//se contiene caratteri non validi o il nome del codice QR è troppo lungo
                     {
-                        qrCodeImage.Save($"{defaultPath}/InvalidName.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                        qrCodeImage.Save($"{defaultQrPath}/InvalidName.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
                     }
                     else
                     {
-                        qrCodeImage.Save($"{defaultPath}/{NomeQRcode}.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                        qrCodeImage.Save($"{defaultQrPath}/{NomeQRcode}.jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
                     }
                 }
                 else if (QRcodeFormat == "PNG") //se invece l'impostazione è PNG
                 {
                     if (containsInvalid)//se quindi contiene caratteri non validi
                     {
-                        qrCodeImage.Save($"{defaultPath}/InvalidName.png", System.Drawing.Imaging.ImageFormat.Png);
+                        qrCodeImage.Save($"{defaultQrPath}/InvalidName.png", System.Drawing.Imaging.ImageFormat.Png);
                     }
                     else
                     {
-                        qrCodeImage.Save($"{defaultPath}/{NomeQRcode}.png", System.Drawing.Imaging.ImageFormat.Png);
+                        qrCodeImage.Save($"{defaultQrPath}/{NomeQRcode}.png", System.Drawing.Imaging.ImageFormat.Png);
                     }
                 }
                 if (lingua == "IT")
@@ -230,11 +229,11 @@ namespace Scriptool
                 }
                 else if (lingua == "EN")
                 {
-                    Console.WriteLine("\nQR code generated and saved to the defined path. Press Enter to go back to the main Menu");
+                    Console.WriteLine("\nQR code generated and saved to the defined folder. Press Enter to go back to the main Menu");
                 }
                 if (apriQRcode == "Y")  //se l'impostazione apriQRcode è uguale a Y apre il codice QR
                 {
-                    System.Diagnostics.Process.Start($"{defaultPath}/{NomeQRcode}.jpeg");
+                    System.Diagnostics.Process.Start($"{defaultQrPath}/{NomeQRcode}.jpeg");
                 }
                 //li metto a null per far sì che il garbage collector svuoti la memoria cancellandoli
                 WiFiPW = null;
@@ -247,7 +246,6 @@ namespace Scriptool
                 qrCodeImage = null;
                 bufferPrecedente = null;
                 GC.Collect();
-
                 Console.ReadLine();
                 MenuPrint();
             }

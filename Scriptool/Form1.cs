@@ -17,7 +17,14 @@ namespace Scriptool
             string path = folderBrowserDialog1.SelectedPath;
             if (path != "")
             {
-                MainClass.defaultPath = path;
+                if (Impostazioni.QR_VideoPath == "QRpath")
+                {
+                    MainClass.defaultQrPath = path;
+                }
+                else if(Impostazioni.QR_VideoPath == "Videopath")
+                {
+                    MainClass.defaultVideoPath = path;
+                }
             }
             this.Close();
         }

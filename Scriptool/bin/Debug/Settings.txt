@@ -2,3 +2,4 @@
 N
 JPEG
 C:\Users\Utente\Desktop
+C:\Users\Utente\Downloads

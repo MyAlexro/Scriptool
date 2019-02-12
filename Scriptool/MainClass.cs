@@ -180,12 +180,10 @@ namespace Scriptool
                 switch (key)
                 {
                     case ConsoleKey.UpArrow:
-                        Console.CursorVisible = false;
                         if (currentOpt > 0) currentOpt--;  //per salire nel menu
                         else if (currentOpt == 0) currentOpt = opt.Length - 1;  //se si è alla prima opzione e si va in su si va all'ultima opzione
                         break;
                     case ConsoleKey.DownArrow:
-                        Console.CursorVisible = false;
                         if (currentOpt < opt.Length - 1) currentOpt++; //per scendere nel menu
                         else if (currentOpt == opt.Length - 1) currentOpt = 0;  //se si è all'ultima opzione e si va ancora in giù si va alla prima opzione
                         break;

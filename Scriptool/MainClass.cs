@@ -2,6 +2,7 @@
 using System.Threading;
 using System.IO;
 using System.Globalization; //per sapere la lingua di sistema
+using static Scriptool.DownloadYTVideo;
 
 
 
@@ -130,7 +131,7 @@ namespace Scriptool
         //     ---------MENU--------
         public static void MenuPrint()
         {
-            string titolo = ("       _____           _       _              _      \n" +
+             string titolo = ("       _____           _       _              _      \n" +
                             "      /  ___|         (_)     | |            | |     \n" +
                             "      \\ `--.  ___ _ __ _ _ __ | |_ ___   ___ | |     \n" +
                             "       `--. \\/ __| '__| | '_ \\| __/ _ \\ / _ \\| |     \n" +
@@ -248,6 +249,17 @@ namespace Scriptool
                         GeneraQRcode.Indietro(); //opt 4
                         break;
                 }
+            }
+            else if (MethodId == "GetQualities")
+            {
+                if (chosenOpt == availableQualities.Count) //se l'opzione scelta è "torna indietro"
+                {
+                    MenuPrint();
+                }
+                else
+                {
+                    GetDownloadUrl(chosenOpt);
+                }   
             }
             else if (MethodId == "Impostazioni") // se invece viene chiamato da "Impostazioni"
             {

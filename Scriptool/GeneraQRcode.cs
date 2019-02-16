@@ -40,7 +40,7 @@ namespace Scriptool
             {
                 bufferPrecedente += " 1) Genera un codice QR\n" +
                 " 2) Genera una password\n" +
-                " 3)\n" +
+                " 3) Scarica un video da Youtube\n" +
                 " 4)\n" +
                 " 5)\n" +
                 " 6)\n" +
@@ -54,9 +54,9 @@ namespace Scriptool
             }
             else if (lingua == "EN")
             {
-                titolo += " 1) Generate a QR code\n" +
+                bufferPrecedente += " 1) Generate a QR code\n" +
                           " 2) Generate a password\n" +
-                          " 3)\n" +
+                          " 3) Download a video from Youtube\n" +
                           " 4)\n" +
                           " 5)\n" +
                           " 6)\n" +

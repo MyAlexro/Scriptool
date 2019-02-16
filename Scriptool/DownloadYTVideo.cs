@@ -2,16 +2,18 @@
 using System.Threading;
 using System.Net;
 using System.ComponentModel;
+using System.Collections.Generic;
+using System.Linq;
 using static Scriptool.MainClass; //per accedere alle impostazioni
 
 namespace Scriptool
 {
     class DownloadYTVideo
     {
+        static string urlInput;
         static WebClient clientWeb;
         static int DownloadUrlStart = 0;
         static int DownloadUrlEnd = 0;
-        static int StartPoint = 0;
         static string videoTitle;
         static char[] videoIdChar = new char[11];  //crea l'array dove conservare l'id del video
         static string videoId; //la stringa dell'id del video
@@ -22,8 +24,10 @@ namespace Scriptool
         static char[] videoTitleChar;
         static string encodedVideoTitle;
         static string urlDownloadString;
-        static int counter = 0;
+        static int counter = 0; 
         static bool downloadFinished = false;
+        static int lastPos = 0; //posizione dell'ultimo url non giusto
+        public static Dictionary<String, bool> availableQualities = new Dictionary<String, bool>(); //contenitore di qualità in cui può essere scaricato il video
 
 
         public static void Start_GetMetadata()
@@ -37,7 +41,8 @@ namespace Scriptool
             {
                 Console.Write("\n3: Insert the link of the video you want to download: ");
             }
-            char[] url = Console.ReadLine().ToCharArray();
+            urlInput = Console.ReadLine();
+            char[] url = urlInput.ToCharArray();
 
             string inputUrl = new string(url);
             if (!inputUrl.Contains("https://www.youtube.")) //se l'url è invalido
@@ -143,95 +148,203 @@ namespace Scriptool
                 {
                     Console.WriteLine($"Video title: {videoTitle}");
                 }
-                GetDownloadUrl();
+                GetQualities();
             }
 
         }
 
 
-
-        static void GetDownloadUrl()
+        static void GetQualities()
         {
+            string bufferPrecedente = "       _____           _       _              _      \n" +
+                "      /  ___|         (_)     | |            | |     \n" +
+                "      \\ `--.  ___ _ __ _ _ __ | |_ ___   ___ | |     \n" +
+                "       `--. \\/ __| '__| | '_ \\| __/ _ \\ / _ \\| |     \n" +
+                "      /\\__/ / (__| |  | | |_) | || (_) | (_) | |     \n" +
+                "      \\____/ \\___|_|  |_| .__/ \\__\\___/ \\___/|_|     \n" +
+                "                        | |                          \n" +
+                "                        |_|                           \t \n" +
+                "________________________________________________________________________________________________________________________\n" +
+                "\n\n\n\n\n";
 
-            if (decodedResponse.Contains("&quality=hd720") || decodedResponse.Contains("quality=hd720")) //se il video ha la qualità HD 720p
+            /* Individua le qualità in cui può essere scaricato il video e aggiunge la qualità al dictionary*/
+            if (decodedResponse.Contains("itag=37") || decodedResponse.Contains("itag=85") || decodedResponse.Contains("itag=96"))
             {
-                if (lingua == "IT")
+                availableQualities.Add("FullHD", true);
+            }
+            if (decodedResponse.Contains("itag=22") || decodedResponse.Contains("itag=84") || decodedResponse.Contains("itag=95"))
+            {
+                availableQualities.Add("HD", true);
+            }
+            if (decodedResponse.Contains("itag=59") || decodedResponse.Contains("itag=78") || decodedResponse.Contains("itag=83") || decodedResponse.Contains("itag=94"))
+            {
+                availableQualities.Add("480p", true);
+            }
+            if (decodedResponse.Contains("itag=18") || decodedResponse.Contains("itag=82") || decodedResponse.Contains("itag=93"))
+            {
+                availableQualities.Add("360p", true);
+            }
+            string[] opz = new string[availableQualities.Count + 1]; //opzioni da passare al PrintOptMenu
+            int n = 0;
+            foreach (var value in availableQualities)
+            {
+                string buffer = $"  {availableQualities.ElementAt(n).ToString().Replace(", True]", "").Replace("[", "")}";
+                opz[n] = buffer;
+                n++;
+            }
+            if (lingua == "IT") //aggiunge l'opz di tornare indietro
+            {
+                opz[opz.Length - 1] = "\n<-Ritorna indietro\n";
+            }
+            else if (lingua == "EN")
+            {
+                opz[opz.Length - 1] = "\n<-Go back\n";
+            }
+            if (lingua == "IT") //ho fatto così se no la scritta scriptool e le opzioni del menu principale si sarebbero cancellati
+            {
+                bufferPrecedente += " 1) Genera un codice QR\n" +
+                " 2) Genera una password\n" +
+                " 3) Scarica un video da Youtube\n" +
+                " 4)\n" +
+                " 5)\n" +
+                " 6)\n" +
+                " 7) Impostazioni\n" +
+                " 8) Esci\n" +
+                $"\n3: Inserire Url del video che si vuole scaricare: {urlInput}\n\n" +
+                $" Titolo del video: {videoTitle}\n\n" +
+                $"  Seleziona la qualità del video:";
+            }
+            else if (lingua == "EN")
+            {
+                bufferPrecedente += " 1) Generate a QR code\n" +
+                " 2) Generate a password\n" +
+                " 3) Download a video from Youtube\n" +
+                " 4)\n" +
+                " 4)\n" +
+                " 5)\n" +
+                " 6)\n" +
+                " 7) Settings\n" +
+                " 8) Exit\n" +
+                $"\n3: Insert the link of the video you want to download: {urlInput}\n\n" +
+                $" Video title: {videoTitle}\n\n" +
+                $"  Select the quality of the video:";
+            }
+            Console.CursorVisible = false;
+            PrintOptMenu(opz, bufferPrecedente, "GetQualities");
+        }
+
+
+        public static void GetDownloadUrl(int chosenOpt)
+        {
+            for (int a = lastPos; a <= charDecodedResponse.Length - 1; a++) //cerca l'inizio dell'url di download del video
+            {
+                if (charDecodedResponse[a] == 'u' && charDecodedResponse[a + 1] == 'r' && charDecodedResponse[a + 2] == 'l' && charDecodedResponse[a + 3] == '=')
                 {
-                    //  Console.WriteLine($"Il video può essere scaricato in HD 720p");
+                    DownloadUrlStart = a + 4;
+                    break;
                 }
-                else if (lingua == "EN")
+            }
+            if (DownloadUrlStart != 0)
+            {
+                for (int b = DownloadUrlStart; b <= charDecodedResponse.Length - 1; b++) //cerca la fine dell'url di download del video
                 {
-                    // Console.WriteLine("The video can be download in HD 720p");
-                }
-                for (int i = 0; i <= charDecodedResponse.Length - 1; i++)
-                {
-                    if (charDecodedResponse[i] == 'y' && charDecodedResponse[i + 1] == '=' && charDecodedResponse[i + 2] == 'h' && charDecodedResponse[i + 3] == 'd')
+                    if (charDecodedResponse[b] == ',' || charDecodedResponse[b] == '&')
                     {
-                        StartPoint = i; //start point da dove iniziare a cercare l'url di download del video
+                        DownloadUrlEnd = b - 1;
                         break;
                     }
                 }
-                if (StartPoint != 0)
+            }
+            if (DownloadUrlEnd != 0)
+            {
+                int urlLenght = (DownloadUrlEnd - DownloadUrlStart) + 1; //calcola la lunghezza dell'url di download del video, +1 perchè c'è un errore da qualche parte
+                counter = 0;                                        //nella ricerca dell'inizio o della fine dell'url di...
+                urlDownloadChar = new char[urlLenght]; //inizializza l'array di char con la lunghezza dell'url
+                for (int c = DownloadUrlStart; c <= DownloadUrlEnd; c++)
                 {
-                    for (int a = StartPoint; a <= charDecodedResponse.Length - 1; a++) //cerca l'inizio dell'url di download del video
-                    {
-                        if (charDecodedResponse[a] == 'u' && charDecodedResponse[a + 1] == 'r' && charDecodedResponse[a + 2] == 'l' && charDecodedResponse[a + 3] == '=')
-                        {
-                            DownloadUrlStart = a + 4;
-                            break;
-                        }
-                    }
+                    urlDownloadChar[counter] = charDecodedResponse[c]; //passa l'url di download(...) dai metadati del video all'array di char
+                    counter++;
                 }
-                if (DownloadUrlStart != 0)
+                urlDownloadString = new string(urlDownloadChar); //converte l'array in string
+                UrlDownloadStringDecoded = Uri.UnescapeDataString(urlDownloadString); //decoda il link per scaricare il video 5 volte
+                UrlDownloadStringDecoded = Uri.UnescapeDataString(urlDownloadString);
+                UrlDownloadStringDecoded = Uri.UnescapeDataString(urlDownloadString);
+                UrlDownloadStringDecoded = Uri.UnescapeDataString(urlDownloadString);
+                UrlDownloadStringDecoded = Uri.UnescapeDataString(urlDownloadString);
+                CheckIfUrlValid(chosenOpt);
+            }
+        }
+
+        static void CheckIfUrlValid(int chosenOpt) //controlla se l'url trovato corrisponde alla qualità scelta
+        {
+            string chosenQuality = availableQualities.ElementAt(chosenOpt).ToString().Replace(", True]", "").Replace("[", "");
+            if (chosenQuality == "FullHD")
+            {
+                if (UrlDownloadStringDecoded.Contains("itag=37") || UrlDownloadStringDecoded.Contains("itag=85") || UrlDownloadStringDecoded.Contains("itag=96"))
                 {
-                    for (int b = DownloadUrlStart; b <= charDecodedResponse.Length - 1; b++) //cerca la fine dell'url di download del video
-                    {
-                        if (charDecodedResponse[b] == ',' || charDecodedResponse[b] == '&')
-                        {
-                            DownloadUrlEnd = b - 1;
-                            break;
-                        }
-                    }
-                }
-                if (DownloadUrlEnd != 0)
-                {
-                    int urlLenght = (DownloadUrlEnd - DownloadUrlStart) + 1; //calcola la lunghezza dell'url di download del video, +1 perchè c'è un errore da qualche parte
-                    counter = 0;                                        //nella ricerca dell'inizio o della fine dell'url di...
-                    urlDownloadChar = new char[urlLenght]; //inizializza l'array di char con la lunghezza dell'url
-                    for (int c = DownloadUrlStart; c <= DownloadUrlEnd; c++)
-                    {
-                        urlDownloadChar[counter] = charDecodedResponse[c]; //passa l'url di download(...) dai metadati del video all'array di char
-                        counter++;
-                    }
-                    urlDownloadString = new string(urlDownloadChar); //converte l'array in string
                     DownloadVideo();
+                }
+                else
+                {
+                    lastPos = DownloadUrlEnd;
+                    GetDownloadUrl(chosenOpt);
+                }
+            }
+            else if (chosenQuality == "HD")
+            {
+                if (UrlDownloadStringDecoded.Contains("itag=22") || UrlDownloadStringDecoded.Contains("itag=84") || UrlDownloadStringDecoded.Contains("itag=95"))
+                {
+                    DownloadVideo();
+                }
+                else
+                {
+                    lastPos = DownloadUrlEnd;
+                    GetDownloadUrl(chosenOpt);
+                }
+            }
+            else if (chosenQuality == "480p")
+            {
+                if (UrlDownloadStringDecoded.Contains("itag=59") || UrlDownloadStringDecoded.Contains("itag=78") || UrlDownloadStringDecoded.Contains("itag=83") || UrlDownloadStringDecoded.Contains("itag=94"))
+                {
+                    DownloadVideo();
+                }
+                else
+                {
+                    lastPos = DownloadUrlEnd;
+                    GetDownloadUrl(chosenOpt);
+                }
+            }
+            else if (chosenQuality == "360p")
+            {
+                if (UrlDownloadStringDecoded.Contains("itag=18") || UrlDownloadStringDecoded.Contains("itag=82") || UrlDownloadStringDecoded.Contains("itag=93"))
+                {
+                    DownloadVideo();
+                }
+                else
+                {
+                    lastPos = DownloadUrlEnd;
+                    GetDownloadUrl(chosenOpt);
                 }
             }
             else
             {
                 if (lingua == "IT")
                 {
-                    Console.WriteLine($"Il video non può essere scaricato in Hd 720p, premere Invio per tornare al Menu principale");
+                    Console.WriteLine("Il video non può essere scaricato, premere invio per tornare al Menu principale");
                 }
                 else if (lingua == "EN")
                 {
-                    Console.WriteLine("The video can't be download in HD 720p, press Enter to go back to the main Menu");
+                    Console.WriteLine("The video can't be downloaded, press enter to go back to the main Menu");
                 }
                 Console.ReadLine();
                 MenuPrint();
             }
-
         }
-         
+
 
 
         static void DownloadVideo()
         {
-            UrlDownloadStringDecoded = Uri.UnescapeDataString(urlDownloadString); //decoda la stringa 5 volte
-            UrlDownloadStringDecoded = Uri.UnescapeDataString(urlDownloadString);
-            UrlDownloadStringDecoded = Uri.UnescapeDataString(urlDownloadString);
-            UrlDownloadStringDecoded = Uri.UnescapeDataString(urlDownloadString);
-            UrlDownloadStringDecoded = Uri.UnescapeDataString(urlDownloadString);
             Uri UriDownloadVideo = new Uri(UrlDownloadStringDecoded); //converte la stringa in Uri
             clientWeb.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadCompletedAsync); //assegna il metodo DownloadCompleted all'evento DownloadFileCompleted
             try
@@ -292,8 +405,8 @@ namespace Scriptool
 
         static void DownloadCompletedAsync(object sender, AsyncCompletedEventArgs e)
         {
-                downloadFinished = true;
-                System.Diagnostics.Debug.WriteLine($"Download completed, downloadFinished = {downloadFinished}");
+            downloadFinished = true;
+            System.Diagnostics.Debug.WriteLine($"Download completed, downloadFinished = {downloadFinished}");
         }
     }
 }

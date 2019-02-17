@@ -27,7 +27,7 @@ namespace Scriptool
         static int counter = 0;
         static bool downloadFinished = false;
         static int lastPos = 0; //posizione dell'ultimo url non giusto
-        public static Dictionary<String, bool> availableQualities = new Dictionary<String, bool>(); //contenitore di qualità in cui può essere scaricato il video
+        public static Dictionary<String, bool> availableQualities; //contenitore di qualità in cui può essere scaricato il video
 
 
         public static void Start_GetMetadata()
@@ -35,11 +35,11 @@ namespace Scriptool
             Console.CursorVisible = true;
             if (lingua == "IT")
             {
-                Console.Write("\n3: Inserire Url del video che si vuole scaricare: ");
+                Console.Write("\n3: Inserire l'url del video che si vuole scaricare: ");
             }
             else if (lingua == "EN")
             {
-                Console.Write("\n3: Insert the link of the video you want to download: ");
+                Console.Write("\n3: Insert the url of the video you want to download: ");
             }
             urlInput = Console.ReadLine();
             char[] url = urlInput.ToCharArray();
@@ -183,6 +183,7 @@ namespace Scriptool
                 "\n\n\n\n\n";
 
             /* Individua le qualità in cui può essere scaricato il video e aggiunge la qualità al dictionary*/
+            availableQualities = new Dictionary<String, bool>();
             if (decodedResponse.Contains("itag=37") || decodedResponse.Contains("itag=85") || decodedResponse.Contains("itag=96"))
             {
                 availableQualities.Add("FullHD", true);
@@ -411,6 +412,21 @@ namespace Scriptool
                 }
                 clientWeb = null;
                 charDecodedResponse = null;
+                availableQualities = null;
+                downloadFinished = false;
+                urlInput = null;
+                DownloadUrlStart = null;
+                DownloadUrlEnd = null;
+                videoTitle = null;
+                videoIdChar = null;
+                videoId = null;
+                charDecodedResponse = null;
+                decodedResponse = null;
+                urlDownloadChar = null;
+                UrlDownloadStringDecoded = null;
+                videoTitleChar = null;
+                encodedVideoTitle = null;
+                urlDownloadString = null;
                 GC.Collect();
                 Console.ReadKey();
                 MenuPrint();

@@ -415,8 +415,8 @@ namespace Scriptool
                 availableQualities = null;
                 downloadFinished = false;
                 urlInput = null;
-                DownloadUrlStart = null;
-                DownloadUrlEnd = null;
+                DownloadUrlStart = 0;
+                DownloadUrlEnd = 0;
                 videoTitle = null;
                 videoIdChar = null;
                 videoId = null;

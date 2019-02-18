@@ -44,33 +44,16 @@ namespace Scriptool
             urlInput = Console.ReadLine();
             char[] url = urlInput.ToCharArray();
             counter = 2;
-            try
+            for (int i = 0; i <= url.Length - 1; i++) //lenght-1 perchè così arriva fino al blocco N°66 dell'array, se no arrivava al blocco N°67 dell'array (che non esiste)
             {
-                for (int i = 0; i <= url.Length - 1; i++) //lenght-1 perchè così arriva fino al blocco N°66 dell'array, se no arrivava al blocco N°67 dell'array (che non esiste)
+                if (url[i] == 'v' && url[i + 1] == '=') //l'id parte da "v=", ho messo di controllare "v" e "=" perchè nel link del video ce ne potrebbero essere 2 di "="
                 {
-                    if (url[i] == 'v' && url[i + 1] == '=') //l'id parte da "v=", ho messo di controllare "v" e "=" perchè nel link del video ce ne potrebbero essere 2 di "="
+                    for (int a = 0; a <= videoIdChar.Length - 1; a++)
                     {
-                        for (int a = 0; a <= videoIdChar.Length - 1; a++)
-                        {
-                            videoIdChar[a] = url[i + counter];
-                            counter++;
-                        }
+                        videoIdChar[a] = url[i + counter];
+                        counter++;
                     }
                 }
-            }
-            catch (IndexOutOfRangeException)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                if (lingua == "IT")
-                {
-                    Console.WriteLine($"Url non valido, premere Invio per tornare al Menu principale");
-                }
-                else if (lingua == "EN")
-                {
-                    Console.WriteLine("Invalid Url, press Enter to go back to the main Menu");
-                }
-                Console.ReadLine();
-                MenuPrint();
             }
             clientWeb = new WebClient(); //inizializza un webclient
             videoId = new string(videoIdChar); //converte l'array di char in stringa
@@ -84,7 +67,24 @@ namespace Scriptool
                 decodedResponse = Uri.UnescapeDataString(encodedResponse);
                 decodedResponse = Uri.UnescapeDataString(encodedResponse); //decoda la risposta del server 6 volte perchè una volta non basta per convertire tutti i simboli url in testo(idk perchè)
                 charDecodedResponse = decodedResponse.ToCharArray(); //converte la risposta in array char
-                GetTitle();
+                if (decodedResponse.Contains("reason=Invalid+parameters"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    if (lingua == "IT")
+                    {
+                        Console.WriteLine($"Url non valido, premere Invio per tornare al Menu principale");
+                    }
+                    else if (lingua == "EN")
+                    {
+                        Console.WriteLine("Invalid Url, press Enter to go back to the main Menu");
+                    }
+                    Console.ReadLine();
+                    MenuPrint();
+                }
+                else
+                {
+                    GetTitle();
+                }
             }
             catch (WebException)
             {
@@ -110,31 +110,15 @@ namespace Scriptool
         {
             int titleStart = 0;
             int titleEnd = 0;
-            try
+            for (int i = 0; i <= charDecodedResponse.Length; i++)
             {
-                for (int i = 0; i <= charDecodedResponse.Length; i++)
+                if (charDecodedResponse[i] == 't' && charDecodedResponse[i + 1] == 'l' && charDecodedResponse[i + 2] == 'e' && charDecodedResponse[i + 3] == '=')
                 {
-                    if (charDecodedResponse[i] == 't' && charDecodedResponse[i + 1] == 'l' && charDecodedResponse[i + 2] == 'e' && charDecodedResponse[i + 3] == '=')
-                    {
-                        titleStart = i + 4;
-                        break;
-                    }
+                    titleStart = i + 4;
+                    break;
                 }
             }
-            catch(IndexOutOfRangeException)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                if (lingua == "IT")
-                {
-                    Console.WriteLine($"Url non valido, premere Invio per tornare al Menu principale");
-                }
-                else if (lingua == "EN")
-                {
-                    Console.WriteLine("Invalid Url, press Enter to go back to the main Menu");
-                }
-                Console.ReadLine();
-                MenuPrint();
-            }
+
             if (titleStart != 0)
             {
                 for (int i = titleStart; i <= charDecodedResponse.Length; i++)

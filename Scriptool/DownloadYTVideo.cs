@@ -15,7 +15,7 @@ namespace Scriptool
         static int DownloadUrlStart = 0;
         static int DownloadUrlEnd = 0;
         static string videoTitle;
-        static char[] videoIdChar = new char[11];  //crea l'array dove conservare l'id del video
+        static char[] videoIdChar;  //crea l'array dove conservare l'id del video
         static string videoId; //la stringa dell'id del video
         static char[] charDecodedResponse;
         static string decodedResponse; //la risposta dalla web request alla page del video
@@ -44,6 +44,7 @@ namespace Scriptool
             urlInput = Console.ReadLine();
             char[] url = urlInput.ToCharArray();
             counter = 2;
+            videoIdChar = new char[11];
             for (int i = 0; i <= url.Length - 1; i++) //lenght-1 perchè così arriva fino al blocco N°66 dell'array, se no arrivava al blocco N°67 dell'array (che non esiste)
             {
                 if (url[i] == 'v' && url[i + 1] == '=') //l'id parte da "v=", ho messo di controllare "v" e "=" perchè nel link del video ce ne potrebbero essere 2 di "="
@@ -100,8 +101,6 @@ namespace Scriptool
                 Console.ReadLine();
                 MenuPrint();
             }
-
-
         }
 
 
@@ -121,13 +120,20 @@ namespace Scriptool
 
             if (titleStart != 0)
             {
-                for (int i = titleStart; i <= charDecodedResponse.Length; i++)
+                try
                 {
-                    if (charDecodedResponse[i] == '&')
+                    for (int i = titleStart; i <= charDecodedResponse.Length; i++)
                     {
-                        titleEnd = i - 1;
-                        break;
+                        if (charDecodedResponse[i] == '&')
+                        {
+                            titleEnd = i - 1;
+                            break;
+                        }
                     }
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    titleEnd = charDecodedResponse.Length - 1;
                 }
                 int titleLength = (titleEnd - titleStart) + 1;
                 videoTitleChar = new char[titleLength];
@@ -165,42 +171,7 @@ namespace Scriptool
                 "                        |_|                           \t \n" +
                 "________________________________________________________________________________________________________________________\n" +
                 "\n\n\n\n\n";
-
-            /* Individua le qualità in cui può essere scaricato il video e aggiunge la qualità al dictionary*/
-            availableQualities = new Dictionary<String, bool>();
-            if (decodedResponse.Contains("itag=37") || decodedResponse.Contains("itag=85") || decodedResponse.Contains("itag=96"))
-            {
-                availableQualities.Add("FullHD", true);
-            }
-            if (decodedResponse.Contains("itag=22") || decodedResponse.Contains("itag=84") || decodedResponse.Contains("itag=95"))
-            {
-                availableQualities.Add("HD", true);
-            }
-            if (decodedResponse.Contains("itag=59") || decodedResponse.Contains("itag=78") || decodedResponse.Contains("itag=83") || decodedResponse.Contains("itag=94"))
-            {
-                availableQualities.Add("480p", true);
-            }
-            if (decodedResponse.Contains("itag=18") || decodedResponse.Contains("itag=82") || decodedResponse.Contains("itag=93"))
-            {
-                availableQualities.Add("360p", true);
-            }
-            string[] opz = new string[availableQualities.Count + 1]; //opzioni da passare al PrintOptMenu
-            int n = 0;
-            foreach (var value in availableQualities)
-            {
-                string buffer = $"  {availableQualities.ElementAt(n).ToString().Replace(", True]", "").Replace("[", "")}";
-                opz[n] = buffer;
-                n++;
-            }
-            if (lingua == "IT") //aggiunge l'opz di tornare indietro
-            {
-                opz[opz.Length - 1] = "\n<-Ritorna indietro\n";
-            }
-            else if (lingua == "EN")
-            {
-                opz[opz.Length - 1] = "\n<-Go back\n";
-            }
-            if (lingua == "IT") //ho fatto così se no la scritta scriptool e le opzioni del menu principale si sarebbero cancellati
+            if (lingua == "IT") //ho fatto così se no la scritta scriptool e le opzioni del menu principale si sarebbero cancellati ogni volta che si muove opzione
             {
                 bufferPrecedente += " 1) Genera un codice QR\n" +
                 " 2) Genera una password\n" +
@@ -229,7 +200,62 @@ namespace Scriptool
                 $" Video title: {videoTitle}\n\n" +
                 $"  Select the quality of the video:";
             }
-            Console.CursorVisible = false;
+            /* Individua le qualità in cui può essere scaricato il video e aggiunge la qualità al dictionary*/
+            availableQualities = new Dictionary<String, bool>();
+            if (decodedResponse.Contains("itag=37") || decodedResponse.Contains("itag=85") || decodedResponse.Contains("itag=96"))
+            {
+                availableQualities.Add("FullHD", true);
+            }
+            if (decodedResponse.Contains("itag=22") || decodedResponse.Contains("itag=84") || decodedResponse.Contains("itag=95"))
+            {
+                availableQualities.Add("HD", true);
+            }
+            if (decodedResponse.Contains("itag=59") || decodedResponse.Contains("itag=78") || decodedResponse.Contains("itag=83") || decodedResponse.Contains("itag=94"))
+            {
+                availableQualities.Add("480p", true);
+            }
+            if (decodedResponse.Contains("itag=18") || decodedResponse.Contains("itag=82") || decodedResponse.Contains("itag=93"))
+            {
+                availableQualities.Add("360p", true);
+            }
+            if (decodedResponse.Contains("itag=6") || decodedResponse.Contains("itag=91") || decodedResponse.Contains("itag=132"))
+            {
+                availableQualities.Add("240p", true);
+            }
+            string[] opz = new string[availableQualities.Count + 1]; //opzioni da passare al PrintOptMenu
+            int n = 0;
+            System.Diagnostics.Debug.WriteLine($"availableQualities.Count = {availableQualities.Count}");
+            if (availableQualities.Count != 0)
+            {
+                foreach (var value in availableQualities)
+                {
+                    string buffer = $"  {availableQualities.ElementAt(n).ToString().Replace(", True]", "").Replace("[", "")}";
+                    opz[n] = buffer;
+                    n++;
+                }
+            }
+            else if (availableQualities.Count == 0)
+            {
+                if (lingua == "IT")
+                {
+                    System.Diagnostics.Debug.WriteLine("niente qual");
+                    bufferPrecedente += "\n\n  Nessuna qualità trovata";
+                    System.Diagnostics.Debug.WriteLine(bufferPrecedente);
+                }
+                else if (lingua == "EN")
+                {
+                    bufferPrecedente += "\n\n  No qualities found";
+                }
+            }
+
+            if (lingua == "IT") //aggiunge l'opz di tornare indietro
+            {
+                opz[opz.Length - 1] = "\n<-Ritorna indietro\n";
+            }
+            else if (lingua == "EN")
+            {
+                opz[opz.Length - 1] = "\n<-Go back\n";
+            }
             PrintOptMenu(opz, bufferPrecedente, "GetQualities");
         }
 
@@ -326,6 +352,18 @@ namespace Scriptool
                     GetDownloadUrl(chosenOpt);
                 }
             }
+            else if (chosenQuality == "240p")
+            {
+                if (decodedResponse.Contains("itag=6") || decodedResponse.Contains("itag=91") || decodedResponse.Contains("itag=132"))
+                {
+                    DownloadVideo();
+                }
+                else
+                {
+                    lastPos = DownloadUrlEnd;
+                    GetDownloadUrl(chosenOpt);
+                }
+            }
             else
             {
                 if (lingua == "IT")
@@ -394,22 +432,13 @@ namespace Scriptool
                 {
                     Console.WriteLine($"\nDownload completed {finishTime}, press Enter to go back to the main Menu");
                 }
-                clientWeb = null;
-                charDecodedResponse = null;
-                availableQualities = null;
                 downloadFinished = false;
                 urlInput = null;
-                DownloadUrlStart = 0;
-                DownloadUrlEnd = 0;
-                videoTitle = null;
-                videoIdChar = null;
                 videoId = null;
                 charDecodedResponse = null;
                 decodedResponse = null;
                 urlDownloadChar = null;
                 UrlDownloadStringDecoded = null;
-                videoTitleChar = null;
-                encodedVideoTitle = null;
                 urlDownloadString = null;
                 GC.Collect();
                 Console.ReadKey();

@@ -4,6 +4,7 @@ using System.Net;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using static Scriptool.MainClass; //per accedere alle impostazioni
 
 namespace Scriptool
@@ -28,6 +29,7 @@ namespace Scriptool
         static bool downloadFinished = false;
         static int lastPos = 0; //posizione dell'ultimo url non giusto
         public static Dictionary<String, bool> availableQualities; //contenitore di qualità in cui può essere scaricato il video
+        static string chosenQuality;
 
 
         public static void Start_GetMetadata()
@@ -238,9 +240,8 @@ namespace Scriptool
             {
                 if (lingua == "IT")
                 {
-                    System.Diagnostics.Debug.WriteLine("niente qual");
+                    System.Diagnostics.Debug.WriteLine("nessuna qualità trovata");
                     bufferPrecedente += "\n\n  Nessuna qualità trovata";
-                    System.Diagnostics.Debug.WriteLine(bufferPrecedente);
                 }
                 else if (lingua == "EN")
                 {
@@ -303,7 +304,7 @@ namespace Scriptool
 
         static void CheckIfUrlValid(int chosenOpt) //controlla se l'url trovato corrisponde alla qualità scelta
         {
-            string chosenQuality = availableQualities.ElementAt(chosenOpt).ToString().Replace(", True]", "").Replace("[", "");
+            chosenQuality = availableQualities.ElementAt(chosenOpt).ToString().Replace(", True]", "").Replace("[", "");
             if (chosenQuality == "FullHD")
             {
                 if (UrlDownloadStringDecoded.Contains("itag=37") || UrlDownloadStringDecoded.Contains("itag=85") || UrlDownloadStringDecoded.Contains("itag=96"))
@@ -364,19 +365,6 @@ namespace Scriptool
                     GetDownloadUrl(chosenOpt);
                 }
             }
-            else
-            {
-                if (lingua == "IT")
-                {
-                    Console.WriteLine("Il video non può essere scaricato, premere invio per tornare al Menu principale");
-                }
-                else if (lingua == "EN")
-                {
-                    Console.WriteLine("The video can't be downloaded, press enter to go back to the main Menu");
-                }
-                Console.ReadLine();
-                MenuPrint();
-            }
         }
 
 
@@ -387,7 +375,26 @@ namespace Scriptool
             clientWeb.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadCompletedAsync); //assegna il metodo DownloadCompleted all'evento DownloadFileCompleted
             try
             {
-                clientWeb.DownloadFileAsync(UriDownloadVideo, $"{defaultVideoPath}/{videoTitle}.mp4"); //comincia a scaricare il file
+                int n = 1;
+                if (!File.Exists($"{defaultVideoPath}/{videoTitle}.mp4")) //se il file non esiste già
+                {
+                    clientWeb.DownloadFileAsync(UriDownloadVideo, $"{defaultVideoPath}/{videoTitle}.mp4"); //comincia a scaricare il file
+                }
+                else
+                {
+                    foreach (var file in defaultVideoPath) //se il video esiste già aggiunge  n  al nome (nomeVideo1, nomeVideo2 ecc.)
+                    {
+                        if (!File.Exists($"{defaultVideoPath}/{videoTitle}({n}).mp4"))
+                        {
+                            clientWeb.DownloadFileAsync(UriDownloadVideo, $"{defaultVideoPath}/{videoTitle}({n}).mp4"); 
+                            break;
+                        }
+                        else
+                        {
+                            n++;
+                        }
+                    }
+                }
                 DateTime startTimeDate = DateTime.Parse(DateTime.Now.ToString()); //prende la data e l'ora locali e li analizza per individuare il formato dell'ora
                 string startTime = startTimeDate.ToString("HH:mm:ss"); //prende l'ora, i minuti e i secondi dal DateTime completo
                 if (lingua == "IT")
@@ -440,6 +447,8 @@ namespace Scriptool
                 urlDownloadChar = null;
                 UrlDownloadStringDecoded = null;
                 urlDownloadString = null;
+                chosenQuality = null;
+                clientWeb = null;
                 GC.Collect();
                 Console.ReadKey();
                 MenuPrint();

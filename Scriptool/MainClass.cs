@@ -209,6 +209,7 @@ namespace Scriptool
                         GeneraPW();  //opt 2
                         break;
                     case 2:
+                        Console.CursorVisible = true;
                         DownloadYTVideo.Start_GetMetadata(); //opt 3
                         break;
                     case 3:

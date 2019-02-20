@@ -453,8 +453,7 @@ namespace Scriptool
                 {
                     Console.WriteLine($"\nDownload completed {finishTime}, press Enter to go back to the main Menu");
                 }
-                Console.Read();
-                urlInput = null;
+                Console.ReadLine();
                 videoId = "";
                 downloadFinished = false;
                 charDecodedResponse = null;

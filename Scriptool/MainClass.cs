@@ -2,7 +2,6 @@
 using System.Threading;
 using System.IO;
 using System.Globalization; //per sapere la lingua di sistema
-using static Scriptool.DownloadYTVideo;
 
 
 
@@ -144,9 +143,9 @@ namespace Scriptool
 
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.CursorVisible = false;
             Console.SetCursorPosition(0, 0);
             Console.CursorSize = 1;
+            Console.CursorVisible = false;
             if (lingua == "IT")
             {
                 options = new string[] { " 1) Genera un codice QR", " 2) Genera una password", " 3) Scarica un video da Youtube", " 4)", " 5)", " 6)", " 7) Impostazioni", " 8) Esci"};
@@ -163,7 +162,6 @@ namespace Scriptool
         {                                                                                 // MethodIdentifier per indentificare da quale metodo viene chiamato
             int currentOpt = 0;
             ConsoleKey key;
-            Console.CursorVisible = false; 
             while(true)
             {
                 System.Diagnostics.Debug.WriteLine(currentOpt);
@@ -253,13 +251,23 @@ namespace Scriptool
             }
             else if (MethodId == "GetQualities")
             {
-                if (chosenOpt == availableQualities.Count) //se l'opzione scelta è "torna indietro"
+                if (chosenOpt == DownloadYTVideo.availableQualities.Count) //TORNA INDIETRO
                 {
+                    DownloadYTVideo.urlInput = null;
+                    DownloadYTVideo.videoId = "";
+                    DownloadYTVideo.downloadFinished = false;
+                    DownloadYTVideo.charDecodedResponse = null;
+                    DownloadYTVideo.decodedResponse = "";
+                    DownloadYTVideo.urlDownloadChar = null;
+                    DownloadYTVideo.UrlDownloadStringDecoded = null;
+                    DownloadYTVideo.urlDownloadString = null;
+                    DownloadYTVideo.chosenQuality = "";
+                    DownloadYTVideo.lastPos = 0;
                     MenuPrint();
                 }
-                else
+                else   //PROCEDI A SCARICARE IL VIDEO
                 {
-                    GetDownloadUrl(chosenOpt);
+                    DownloadYTVideo.GetDownloadUrl(chosenOpt);
                 }   
             }
             else if (MethodId == "Impostazioni") // se invece viene chiamato da "Impostazioni"

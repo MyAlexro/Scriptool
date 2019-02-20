@@ -11,31 +11,30 @@ namespace Scriptool
 {
     class DownloadYTVideo
     {
-        static string urlInput;
+        public static string urlInput = null;
         static WebClient clientWeb;
         static int DownloadUrlStart = 0;
         static int DownloadUrlEnd = 0;
         static string videoTitle;
         static char[] videoIdChar;  //crea l'array dove conservare l'id del video
-        static string videoId; //la stringa dell'id del video
-        static char[] charDecodedResponse;
-        static string decodedResponse; //la risposta dalla web request alla page del video
-        static char[] urlDownloadChar; //url di download del video in un array di char
-        static string UrlDownloadStringDecoded; //la stringa decodata dell'url di download del video
+        public static string videoId; //la stringa dell'id del video
+        public static char[] charDecodedResponse;
+        public static string decodedResponse; //la risposta dalla web request alla page del video
+        public static char[] urlDownloadChar; //url di download del video in un array di char
+        public static string UrlDownloadStringDecoded; //la stringa decodata dell'url di download del video
         static char[] videoTitleChar;
         static string encodedVideoTitle;
-        static string urlDownloadString;
+        public static string urlDownloadString;
         static int counter = 0;
-        static bool downloadFinished = false;
-        static int lastPos = 0; //posizione dell'ultimo url non giusto
+        public static bool downloadFinished = false;
+        public static int lastPos = 0; //posizione dell'ultimo url non giusto
         public static Dictionary<String, bool> availableQualities; //contenitore di qualità in cui può essere scaricato il video
-        static string chosenQuality; //qualità scelta dall'user
+        public static string chosenQuality; //qualità scelta dall'user
         static char[] invalidChars = Path.GetInvalidFileNameChars(); //caratteri non valide con cui nominare un file
 
 
         public static void Start_GetMetadata()
         {
-            Console.CursorVisible = true;
             if (lingua == "IT")
             {
                 Console.Write("\n3: Inserire l'url del video che si vuole scaricare: ");
@@ -45,6 +44,7 @@ namespace Scriptool
                 Console.Write("\n3: Insert the url of the video you want to download: ");
             }
             urlInput = Console.ReadLine();
+            System.Diagnostics.Debug.WriteLine("Premuto invio per output");
             char[] url = urlInput.ToCharArray();
             counter = 2;
             videoIdChar = new char[11];
@@ -71,10 +71,10 @@ namespace Scriptool
                 decodedResponse = Uri.UnescapeDataString(encodedResponse);
                 decodedResponse = Uri.UnescapeDataString(encodedResponse); //decoda la risposta del server 6 volte perchè una volta non basta per convertire tutti i simboli url in testo(idk perchè)
                 charDecodedResponse = decodedResponse.ToCharArray(); //converte la risposta in array char
-                File.WriteAllText("C:/Users/Utente/Downloads/decodedResponse.txt", decodedResponse);
                 if (decodedResponse.Contains("reason=Invalid+parameters"))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
+                    Console.CursorVisible = false;
                     if (lingua == "IT")
                     {
                         Console.WriteLine($"Url non valido, premere Invio per tornare al Menu principale");
@@ -453,16 +453,17 @@ namespace Scriptool
                 {
                     Console.WriteLine($"\nDownload completed {finishTime}, press Enter to go back to the main Menu");
                 }
-                Console.ReadKey();
+                Console.Read();
                 urlInput = null;
-                videoId = null;
+                videoId = "";
                 downloadFinished = false;
                 charDecodedResponse = null;
-                decodedResponse = null;
+                decodedResponse = "";
                 urlDownloadChar = null;
                 UrlDownloadStringDecoded = null;
                 urlDownloadString = null;
-                chosenQuality = null;
+                chosenQuality = "";
+                lastPos = 0;
                 GC.Collect();
                 MenuPrint();
             }

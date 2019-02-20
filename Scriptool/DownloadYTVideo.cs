@@ -29,7 +29,8 @@ namespace Scriptool
         static bool downloadFinished = false;
         static int lastPos = 0; //posizione dell'ultimo url non giusto
         public static Dictionary<String, bool> availableQualities; //contenitore di qualità in cui può essere scaricato il video
-        static string chosenQuality;
+        static string chosenQuality; //qualità scelta dall'user
+        static char[] invalidChars = Path.GetInvalidFileNameChars(); //caratteri non valide con cui nominare un file
 
 
         public static void Start_GetMetadata()
@@ -70,6 +71,7 @@ namespace Scriptool
                 decodedResponse = Uri.UnescapeDataString(encodedResponse);
                 decodedResponse = Uri.UnescapeDataString(encodedResponse); //decoda la risposta del server 6 volte perchè una volta non basta per convertire tutti i simboli url in testo(idk perchè)
                 charDecodedResponse = decodedResponse.ToCharArray(); //converte la risposta in array char
+                File.WriteAllText("C:/Users/Utente/Downloads/decodedResponse.txt", decodedResponse);
                 if (decodedResponse.Contains("reason=Invalid+parameters"))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -298,9 +300,11 @@ namespace Scriptool
                 UrlDownloadStringDecoded = Uri.UnescapeDataString(urlDownloadString);
                 UrlDownloadStringDecoded = Uri.UnescapeDataString(urlDownloadString);
                 UrlDownloadStringDecoded = Uri.UnescapeDataString(urlDownloadString);
+
                 CheckIfUrlValid(chosenOpt);
             }
         }
+
 
         static void CheckIfUrlValid(int chosenOpt) //controlla se l'url trovato corrisponde alla qualità scelta
         {
@@ -375,18 +379,28 @@ namespace Scriptool
             clientWeb.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadCompletedAsync); //assegna il metodo DownloadCompleted all'evento DownloadFileCompleted
             try
             {
-                int n = 1;
-                if (!File.Exists($"{defaultVideoPath}/{videoTitle}.mp4")) //se il file non esiste già
+
+                for (int i = 0; i <= invalidChars.Length - 1; i++) //toglie i caratteri non validi nel titolo
                 {
-                    clientWeb.DownloadFileAsync(UriDownloadVideo, $"{defaultVideoPath}/{videoTitle}.mp4"); //comincia a scaricare il file
+                    if (videoTitle.Contains(invalidChars[i]))
+                    {
+                        System.Diagnostics.Debug.WriteLine("Carattere non valido nel titolo trovato e rimpiazzato");
+                        videoTitle = videoTitle.Replace(invalidChars[i].ToString(), "");
+                    }
+                }
+
+                int n = 1;
+                if (!File.Exists($@"{defaultVideoPath}\{videoTitle}.mp4")) //se il file non esiste già
+                {
+                    clientWeb.DownloadFileAsync(UriDownloadVideo, $@"{defaultVideoPath}\{videoTitle}.mp4"); //comincia a scaricare il file
                 }
                 else
                 {
                     foreach (var file in defaultVideoPath) //se il video esiste già aggiunge  n  al nome (nomeVideo1, nomeVideo2 ecc.)
                     {
-                        if (!File.Exists($"{defaultVideoPath}/{videoTitle}({n}).mp4"))
+                        if (!File.Exists($@"{defaultVideoPath}\{videoTitle}({n}).mp4"))
                         {
-                            clientWeb.DownloadFileAsync(UriDownloadVideo, $"{defaultVideoPath}/{videoTitle}({n}).mp4"); 
+                            clientWeb.DownloadFileAsync(UriDownloadVideo, $@"{defaultVideoPath}\{videoTitle}({n}).mp4");
                             break;
                         }
                         else
@@ -417,7 +431,7 @@ namespace Scriptool
             {
                 if (lingua == "IT")
                 {
-                    Console.WriteLine("Errore nel scaricare il video, premere Invio per tornare al Menu principale");
+                    Console.WriteLine("Errore nello scaricare il video, premere Invio per tornare al Menu principale");
                 }
                 else if (lingua == "EN")
                 {
@@ -439,18 +453,17 @@ namespace Scriptool
                 {
                     Console.WriteLine($"\nDownload completed {finishTime}, press Enter to go back to the main Menu");
                 }
-                downloadFinished = false;
+                Console.ReadKey();
                 urlInput = null;
                 videoId = null;
+                downloadFinished = false;
                 charDecodedResponse = null;
                 decodedResponse = null;
                 urlDownloadChar = null;
                 UrlDownloadStringDecoded = null;
                 urlDownloadString = null;
                 chosenQuality = null;
-                clientWeb = null;
                 GC.Collect();
-                Console.ReadKey();
                 MenuPrint();
             }
         }

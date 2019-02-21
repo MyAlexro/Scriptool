@@ -11,7 +11,7 @@ namespace Scriptool
 {
     class DownloadYTVideo
     {
-        public static string urlInput = null;
+        public static string urlInput = "";
         static WebClient clientWeb;
         static int DownloadUrlStart = 0;
         static int DownloadUrlEnd = 0;
@@ -23,7 +23,6 @@ namespace Scriptool
         public static char[] urlDownloadChar; //url di download del video in un array di char
         public static string UrlDownloadStringDecoded; //la stringa decodata dell'url di download del video
         static char[] videoTitleChar;
-        static string encodedVideoTitle;
         public static string urlDownloadString;
         static int counter = 0;
         public static bool downloadFinished = false;
@@ -31,7 +30,7 @@ namespace Scriptool
         public static Dictionary<String, bool> availableQualities; //contenitore di qualità in cui può essere scaricato il video
         public static string chosenQuality; //qualità scelta dall'user
         static char[] invalidChars = Path.GetInvalidFileNameChars(); //caratteri non valide con cui nominare un file
-
+        static int n = 0; //var per una funzione di debug e per individ. num di video con lo stesso nome
 
         public static void Start_GetMetadata()
         {
@@ -147,8 +146,7 @@ namespace Scriptool
                     videoTitleChar[counter] = charDecodedResponse[i];
                     counter++;
                 }
-                encodedVideoTitle = new string(videoTitleChar);
-                videoTitle = WebUtility.UrlDecode(encodedVideoTitle);
+                videoTitle = WebUtility.UrlDecode(new string(videoTitleChar));
                 if (lingua == "IT")
                 {
                     Console.WriteLine($"Titolo del video: {videoTitle}");
@@ -250,7 +248,6 @@ namespace Scriptool
                     bufferPrecedente += "\n\n  No qualities found";
                 }
             }
-
             if (lingua == "IT") //aggiunge l'opz di tornare indietro
             {
                 opz[opz.Length - 1] = "\n<-Ritorna indietro\n";
@@ -308,6 +305,8 @@ namespace Scriptool
 
         static void CheckIfUrlValid(int chosenOpt) //controlla se l'url trovato corrisponde alla qualità scelta
         {
+            n++;
+            System.Diagnostics.Debug.WriteLine($"CheckIfUrlValid execution number {n}");
             chosenQuality = availableQualities.ElementAt(chosenOpt).ToString().Replace(", True]", "").Replace("[", "");
             if (chosenQuality == "FullHD")
             {
@@ -379,7 +378,6 @@ namespace Scriptool
             clientWeb.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadCompletedAsync); //assegna il metodo DownloadCompleted all'evento DownloadFileCompleted
             try
             {
-
                 for (int i = 0; i <= invalidChars.Length - 1; i++) //toglie i caratteri non validi nel titolo
                 {
                     if (videoTitle.Contains(invalidChars[i]))
@@ -389,7 +387,7 @@ namespace Scriptool
                     }
                 }
 
-                int n = 1;
+                n = 1;
                 if (!File.Exists($@"{defaultVideoPath}\{videoTitle}.mp4")) //se il file non esiste già
                 {
                     clientWeb.DownloadFileAsync(UriDownloadVideo, $@"{defaultVideoPath}\{videoTitle}.mp4"); //comincia a scaricare il file

@@ -162,9 +162,10 @@ namespace Scriptool
         {                                                                                 // MethodIdentifier per indentificare da quale metodo viene chiamato
             int currentOpt = 0;
             ConsoleKey key;
+            Console.CursorVisible = false;
             while(true)
             {
-                System.Diagnostics.Debug.WriteLine(currentOpt);
+                System.Diagnostics.Debug.WriteLine($"currentOpt: {currentOpt}");
                 Console.Clear();
                 Console.WriteLine(staticText);
                 for (int i = 0; i < opt.Length; i++)

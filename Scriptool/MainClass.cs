@@ -148,12 +148,12 @@ namespace Scriptool
             Console.CursorVisible = false;
             if (lingua == "IT")
             {
-                options = new string[] { " 1) Genera un codice QR", " 2) Genera una password", " 3) Scarica un video da Youtube", " 4)", " 5)", " 6)", " 7) Impostazioni", " 8) Esci"};
+                options = new string[] { " 1) Genera un codice QR", " 2) Genera una password", " 3) Scarica un video da Youtube", " 4)", " 5)", " 6) Crediti", " 7) Impostazioni", " 8) Esci"};
                 PrintOptMenu(options, titolo, "MenuPrint");
             }
             else if (lingua == "EN")
             {
-                options = new string[] { " 1) Generate a QR code", " 2) Generate a password", " 3) Download a video from Youtube", " 4)", " 5)", " 6)", " 7) Settings", " 8) Exit"};
+                options = new string[] { " 1) Generate a QR code", " 2) Generate a password", " 3) Download a video from Youtube", " 4)", " 5)", " 6) Credits", " 7) Settings", " 8) Exit"};
                 PrintOptMenu(options, titolo, "MenuPrint");
             }
         }
@@ -220,7 +220,7 @@ namespace Scriptool
                         Option5();  //opt 5
                         break;
                     case 5:
-                        Option6();  //opt 6
+                        Crediti();  //opt 6
                         break;
                     case 6:
                         Impostazioni.PrintImpostazioni();  //opt 7
@@ -409,10 +409,28 @@ namespace Scriptool
             Console.WriteLine(": ");
         }
 
-        //----OPTION 6----//
-        static void Option6()
+        static void Crediti()
         {
-            Console.WriteLine(": ");
+            if (lingua == "IT")
+            {
+                Console.WriteLine("\n" +
+                    "\nCreatore: Alessandro Dinardo (aka MyAlexro)" +
+                    "\nScriptool Github repository: https://github.com/MyAlexro/Scriptool" +
+                    "\nQRCoder API Github repository: https://github.com/codebude/QRCoder" +
+                    "\nSito usato per l'Ascii Art: http://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20" +
+                    "\n\nPremere Invio per tornare al Menu principale");
+            }
+            else if (lingua == "EN")
+            {
+                Console.WriteLine("\n" +
+                    "\nCreator: Alessandro Dinardo (aka MyAlexro)" +
+                    "\nScriptool Github repository: https://github.com/MyAlexro/Scriptool" +
+                    "\nQRCoder API Github repository: https://github.com/codebude/QRCoder" +
+                    "\nSite used to create Ascii Art: http://patorjk.com/software/taag/#p=display&f=Graffiti&t=Type%20Something%20" +
+                    "\n\nPress Enter to go back at the main Menu");
+            }
+            Console.ReadLine();
+            MenuPrint();
         }
 
         //----Impostazioni----//

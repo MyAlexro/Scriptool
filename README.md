@@ -1,5 +1,5 @@
 # Scriptool
-Scriptool is a Console application, written in C#, with a some useful functions:
+Scriptool is a Console application, written in C#, with some useful functions:
 
 
 
@@ -18,3 +18,4 @@ Given the lenght of the password, the software will generate one. The password c
 ## Download a video from Youtube
 Insert the link of a Youtube video, choose a quality from the available ones and download it
 
+##Others incoming...

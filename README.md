@@ -1,10 +1,10 @@
 # Scriptool
-Scriptool is a Console application, written in C#, with a some useful functions:
+Scriptool is a Console application, written in C#, with some useful functions:
 
 
 
 ## Generate a QR code
-Generate 3 types(for now) of QR codes:
+Generate 3 types of QR codes:
 
 - Text/Link: when scanned it will return a text or a link
 - Autoconnect to a WiFi Network: when scanned it will connect to the specified SSID using the specified password(It supports only WPA and WPA2 authentication)
@@ -18,3 +18,4 @@ Given the lenght of the password, the software will generate one. The password c
 ## Download a video from Youtube
 Insert the link of a Youtube video, choose a quality from the available ones and download it
 
+## Others incoming...

@@ -43,7 +43,6 @@ namespace Scriptool
                 Console.Write("\n3: Insert the url of the video you want to download: ");
             }
             urlInput = Console.ReadLine();
-            System.Diagnostics.Debug.WriteLine("Premuto invio per output");
             char[] url = urlInput.ToCharArray();
             counter = 2;
             videoIdChar = new char[11];
@@ -441,16 +440,33 @@ namespace Scriptool
 
             if (downloadFinished == true)
             {
-                DateTime finishTimeDate = DateTime.Parse(DateTime.Now.ToString());
-                string finishTime = finishTimeDate.ToString("HH:mm:ss");
-                if (lingua == "IT")
+                FileInfo FileSize = new FileInfo($@"{defaultVideoPath}\{videoTitle}.mp4");
+                if (FileSize.Length <= 1)
                 {
-                    Console.WriteLine($"\nDownload video completato {finishTime}, premere Invio per tornare al Menu principale");
+                    if (lingua == "IT")
+                    {
+                        Console.WriteLine("\nE' stato impossibile scaricare il file, premere Invio per tornare al Menu principale");
+                    }
+                    else if (lingua == "EN")
+                    {
+                        Console.WriteLine($"\nIt was impossible to download the video, press Enter to go back to the main Menu");
+                    }
+                    File.Delete($@"{defaultVideoPath}\{videoTitle}.mp4");
                 }
-                else if (lingua == "EN")
+                else
                 {
-                    Console.WriteLine($"\nDownload completed {finishTime}, press Enter to go back to the main Menu");
+                    DateTime finishTimeDate = DateTime.Parse(DateTime.Now.ToString());
+                    string finishTime = finishTimeDate.ToString("HH:mm:ss");
+                    if (lingua == "IT")
+                    {
+                        Console.WriteLine($"\nDownload video completato {finishTime}, premere Invio per tornare al Menu principale");
+                    }
+                    else if (lingua == "EN")
+                    {
+                        Console.WriteLine($"\nDownload completed {finishTime}, press Enter to go back to the main Menu");
+                    }
                 }
+
                 Console.ReadLine();
                 videoId = "";
                 downloadFinished = false;

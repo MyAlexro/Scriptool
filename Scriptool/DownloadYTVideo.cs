@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Threading;
-using System.Net;
-using System.ComponentModel;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Threading;
 using static Scriptool.MainClass; //per accedere alle impostazioni
 
 namespace Scriptool
@@ -31,6 +31,8 @@ namespace Scriptool
         public static string chosenQuality; //qualità scelta dall'user
         static char[] invalidChars = Path.GetInvalidFileNameChars(); //caratteri non valide con cui nominare un file
         static int n = 0; //var per una funzione di debug e per individ. num di video con lo stesso nome
+        static double rawFileSize;
+        static double fileSize;
 
         public static void Start_GetMetadata()
         {
@@ -398,6 +400,7 @@ namespace Scriptool
                         if (!File.Exists($@"{defaultVideoPath}\{videoTitle}({n}).mp4"))
                         {
                             clientWeb.DownloadFileAsync(UriDownloadVideo, $@"{defaultVideoPath}\{videoTitle}({n}).mp4");
+                            videoTitle += $"({n})";
                             break;
                         }
                         else
@@ -410,11 +413,14 @@ namespace Scriptool
                 string startTime = startTimeDate.ToString("HH:mm:ss"); //prende l'ora, i minuti e i secondi dal DateTime completo
                 if (lingua == "IT")
                 {
+                    Console.WriteLine($"Dimensione del video: {GetVideoSize(UriDownloadVideo)}\n" +
+                        $"Tempo stimato per il download: {GetEstimatedFinishTime($@"{defaultVideoPath}\{videoTitle}.mp4")}");
                     Console.WriteLine($"Download del video iniziato {startTime}, verrà salvato nella cartella predefinita. Non chiudere il programma!");
                     Console.Write("Download in corso...");
                 }
                 else if (lingua == "EN")
                 {
+                    Console.WriteLine($"Size of the video: {GetVideoSize(UriDownloadVideo)}\nEstimated download time: {GetEstimatedFinishTime($@"{defaultVideoPath}\{videoTitle}.mp4")}");
                     Console.WriteLine($"Download of the video started {startTime}, it'll be saved in the defined folder. Please don't close the program!");
                     Console.Write("Downlading...");
                 }
@@ -445,7 +451,7 @@ namespace Scriptool
                 {
                     if (lingua == "IT")
                     {
-                        Console.WriteLine("\nE' stato impossibile scaricare il file, premere Invio per tornare al Menu principale");
+                        Console.WriteLine("\nE' stato impossibile scaricare il video, premere Invio per tornare al Menu principale");
                     }
                     else if (lingua == "EN")
                     {
@@ -482,11 +488,42 @@ namespace Scriptool
             }
         }
 
-
         static void DownloadCompletedAsync(object sender, AsyncCompletedEventArgs e)
         {
             downloadFinished = true;
             System.Diagnostics.Debug.WriteLine($"Download completed, downloadFinished = {downloadFinished}");
+        }
+
+        private static string GetVideoSize(Uri uriPath) //prende il peso del video
+        {
+            var webRequest = HttpWebRequest.Create(uriPath); 
+            webRequest.Method = "HEAD";
+
+            using (var webResponse = webRequest.GetResponse())
+            {
+                rawFileSize = Convert.ToDouble(webResponse.Headers.Get("Content-Length"));
+                fileSize = Math.Round(rawFileSize / 1024.0 / 1024.0, 2);
+                if (fileSize / 1024 >= 1)
+                {
+                    fileSize = Math.Round(rawFileSize / 1024.0 / 1024.0 / 1024.0, 2);
+                    return (fileSize).ToString() + " GB";
+                }
+                fileSize = Math.Round(rawFileSize / 1024.0 / 1024.0, 2);
+                return fileSize.ToString() + " MB";
+            }
+        }
+
+        private static string GetEstimatedFinishTime(string FilePath) //stima il tempo per terminare il download del video
+        {
+            int difference;
+            Thread.Sleep(1000);
+            var currentSize1 = new System.IO.FileInfo(FilePath).Length;
+            Thread.Sleep(1000);
+            var currentSize2 = new System.IO.FileInfo(FilePath).Length;
+            difference = Convert.ToInt32(currentSize2 - currentSize1);
+            double EstimatedFinishTime;
+            EstimatedFinishTime = (rawFileSize / difference);
+            return Math.Round(EstimatedFinishTime, 0).ToString() + "s";
         }
     }
 }

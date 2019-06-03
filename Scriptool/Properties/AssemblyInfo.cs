@@ -9,10 +9,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Scriptool")]
 [assembly: AssemblyDescription("A Console Application with a lot of functions")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Alessandro Dinardo")]
 [assembly: AssemblyProduct("Scriptool")]
 [assembly: AssemblyCopyright("Copyright ©  2019 Alessandro Dinardo")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("Alessandro Dinardo")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -34,6 +34,6 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("0.9.0.0")]
 [assembly: NeutralResourcesLanguage("it-IT")]
 

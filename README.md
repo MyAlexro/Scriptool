@@ -22,5 +22,12 @@ The algorithm was written by me
 ## Others incoming...
 
 
+
+
+
+
+
+
+
 ## Known issues:
 1) Some videos can't be downloaded

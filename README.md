@@ -20,3 +20,7 @@ Insert the link of a Youtube video, choose a quality from the available ones and
 The algorithm was written by me
 
 ## Others incoming...
+
+
+## Known issues:
+1) Some videos can't be downloaded

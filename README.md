@@ -17,5 +17,17 @@ Given the lenght of the password, the software will generate one. The password c
 
 ## Download a video from Youtube
 Insert the link of a Youtube video, choose a quality from the available ones and download it
+The algorithm was written by me
 
 ## Others incoming...
+<pre>
+
+
+
+
+
+
+
+</pre>
+## Known issues:
+1) Some videos can't be downloaded

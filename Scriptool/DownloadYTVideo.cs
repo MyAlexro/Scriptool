@@ -225,6 +225,10 @@ namespace Scriptool
             {
                 availableQualities.Add("240p", true);
             }
+            if (decodedResponse.Contains("itag=139") || decodedResponse.Contains("itag=140") || decodedResponse.Contains("itag=141") || decodedResponse.Contains("itag=256") || decodedResponse.Contains("itag=258") || decodedResponse.Contains("itag=325") || decodedResponse.Contains("itag=328"))
+            {
+                availableQualities.Add("AudioOnly", true);
+            }
             string[] opz = new string[availableQualities.Count + 1]; //opzioni da passare al PrintOptMenu
             int n = 0;
             System.Diagnostics.Debug.WriteLine($"availableQualities.Count = {availableQualities.Count}");
@@ -359,7 +363,19 @@ namespace Scriptool
             }
             else if (chosenQuality == "240p")
             {
-                if (decodedResponse.Contains("itag=6") || decodedResponse.Contains("itag=91") || decodedResponse.Contains("itag=132"))
+                if (UrlDownloadStringDecoded.Contains("itag=6") || UrlDownloadStringDecoded.Contains("itag=91") || UrlDownloadStringDecoded.Contains("itag=132"))
+                {
+                    DownloadVideo();
+                }
+                else
+                {
+                    lastPos = DownloadUrlEnd;
+                    GetDownloadUrl(chosenOpt);
+                }
+            }
+            else if (chosenQuality == "AudioOnly")
+            {
+                if (UrlDownloadStringDecoded.Contains("itag=139") || UrlDownloadStringDecoded.Contains("itag=140") || UrlDownloadStringDecoded.Contains("itag=141") || UrlDownloadStringDecoded.Contains("itag=256") || UrlDownloadStringDecoded.Contains("itag=258") || UrlDownloadStringDecoded.Contains("itag=325") || UrlDownloadStringDecoded.Contains("itag=328"))
                 {
                     DownloadVideo();
                 }

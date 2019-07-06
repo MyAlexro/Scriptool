@@ -2,8 +2,7 @@
 using System.Threading;
 using System.IO;
 using System.Globalization; //per sapere la lingua di sistema
-
-
+using System.Diagnostics;
 
 namespace Scriptool
 {
@@ -148,12 +147,12 @@ namespace Scriptool
             Console.CursorVisible = false;
             if (lingua == "IT")
             {
-                options = new string[] { " 1) Genera un codice QR", " 2) Genera una password", " 3) Scarica un video da Youtube", " 4)", " 5)", " 6) Crediti", " 7) Impostazioni", " 8) Esci"};
+                options = new string[] { " 1) Genera un codice QR", " 2) Genera una password", " 3) Scarica un video da Youtube", " 4) In arrivo", " 5) In arrivo", " 6) Crediti", " 7) Impostazioni", " 8) Esci"};
                 PrintOptMenu(options, titolo, "MenuPrint");
             }
             else if (lingua == "EN")
             {
-                options = new string[] { " 1) Generate a QR code", " 2) Generate a password", " 3) Download a video from Youtube", " 4)", " 5)", " 6) Credits", " 7) Settings", " 8) Exit"};
+                options = new string[] { " 1) Generate a QR code", " 2) Generate a password", " 3) Download a video from Youtube", " 4) Coming soon", " 5) Coming soon", " 6) Credits", " 7) Settings", " 8) Exit"};
                 PrintOptMenu(options, titolo, "MenuPrint");
             }
         }
@@ -189,7 +188,7 @@ namespace Scriptool
                         else if (currentOpt == opt.Length - 1) currentOpt = 0;  //se si è all'ultima opzione e si va ancora in giù si va alla prima opzione
                         break;
                     case ConsoleKey.Enter:
-                        InitOpt(currentOpt, MethodId); //se si preme Enter chiama Init(ialize)Opt con l'opzione scelta(currentOpt) e il nome del metodo da cui viene chiamato (MethodId)
+                        InitOpt(currentOpt, MethodId); //se si preme Enter chiama InitOpt con l'opzione scelta(currentOpt) e il nome del metodo da cui viene chiamato (MethodId)
                         break;
                 }
             }

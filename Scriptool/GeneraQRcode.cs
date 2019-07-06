@@ -20,7 +20,7 @@ namespace Scriptool
         static QRCode qrCode;
         static Bitmap qrCodeImage;
 
-        static char[] InvalidChars = Path.GetInvalidFileNameChars(); //lettere non valide con cui nominare un file
+        static readonly char[] InvalidChars = Path.GetInvalidFileNameChars(); //lettere non valide con cui nominare un file
         static bool containsInvalid = false; //serve per settare se il nome del codice qr contiene caratteri non validi
 
         public static void ScegliQRcode()
@@ -243,7 +243,6 @@ namespace Scriptool
                 qrCodeData = null;
                 qrGenerator = null;
                 qrCodeData = null;
-                qrCodeImage = null;
                 bufferPrecedente = null;
                 GC.Collect();
                 Console.ReadLine();

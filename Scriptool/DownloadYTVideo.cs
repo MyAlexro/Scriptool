@@ -29,7 +29,7 @@ namespace Scriptool
         public static int lastPos = 0; //posizione dell'ultimo url non giusto
         public static Dictionary<String, bool> availableQualities; //contenitore di qualità in cui può essere scaricato il video
         public static string chosenQuality; //qualità scelta dall'user
-        static char[] invalidChars = Path.GetInvalidFileNameChars(); //caratteri non valide con cui nominare un file
+        static readonly char[] invalidChars = Path.GetInvalidFileNameChars(); //caratteri non valide con cui nominare un file
         static int n = 0; //var per una funzione di debug e per individ. num di video con lo stesso nome
         static double rawFileSize;
         static double fileSize;
@@ -203,7 +203,7 @@ namespace Scriptool
                 $" Video title: {videoTitle}\n\n" +
                 $"  Select the quality of the video:";
             }
-            /* Individua le qualità in cui può essere scaricato il video e aggiunge la qualità al dictionary*/
+             /*Individua le qualità in cui può essere scaricato il video e aggiunge la qualità al dictionary*/
             availableQualities = new Dictionary<String, bool>();
             if (decodedResponse.Contains("itag=37") || decodedResponse.Contains("itag=85") || decodedResponse.Contains("itag=96"))
             {

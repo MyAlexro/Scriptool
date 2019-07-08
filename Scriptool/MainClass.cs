@@ -194,13 +194,7 @@ namespace Scriptool
 
             }
         }
-        private static void ClearCurrentConsoleLine()
-        {
-            int currentLineCursor = Console.CursorTop;
-            Console.SetCursorPosition(0, Console.CursorTop);
-            Console.Write(new string(' ', Console.WindowWidth));
-            Console.SetCursorPosition(0, currentLineCursor);
-        }
+
         //Inizializza l'opzione scelta
         static void InitOpt(int chosenOpt, string MethodId) //opzione scelta(currentOpt) | nome del metodo da cui viene chiamato (MethodId)
         {

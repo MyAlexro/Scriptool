@@ -45,7 +45,7 @@ namespace Scriptool
             {
                 //impostazioni predefinite
                 if (linguaSys.ToString().Contains("IT")) StrWr.WriteLine("IT"); //LINGUA
-                else if (linguaSys.ToString().Contains("EN")) StrWr.WriteLine("EN"); //LINGUA
+                else StrWr.WriteLine("EN"); //LINGUA
                 StrWr.WriteLine("Y");  //APRI QR CODE
                 StrWr.WriteLine("JPEG");  //SALVA QR CON CON L'ESTEINSIONE
                 StrWr.WriteLine(DesktopPath); //SALVA IL CODICE QR NELLA PATH

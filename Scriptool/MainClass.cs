@@ -10,10 +10,11 @@ namespace Scriptool
     {
         static public string scriptoolPath = Path.GetDirectoryName(System.IO.Path.GetFullPath("Scriptool.exe")); //prende la path di dov'è Scriptool.exe (togliendo la parte Scriptool.exe)
         static public string lingua; //lingua di scriptool = ? ("IT","EN")
+        static private ConsoleKey key;
         static public string apriQRcode;  //aprire il codice QR dopo averlo creato?
-        static public string QRcodeFormat; //salva il codice qr con il formato: ?
-        static public string defaultQrPath; //salva il codice qr nella path: ?
-        static public string defaultVideoPath; //salva i video nella path: ?
+        static public string QRcodeFormat; //salva il codice qr con il formato
+        static public string defaultQrPath; //salva il codice qr nella path
+        static public string defaultVideoPath; //salva i video nella path
         static public string[] options; //inizializza le opzioni (che l'utente dovrà selezionare)
         static public string titolo; //titolo da printare "Scriptool", "Settings" o "Impostazioni"
 
@@ -71,9 +72,9 @@ namespace Scriptool
         static void StartUp()
         {
             Console.Clear();
-            Console.Title = "Scriptool"; 
+            Console.Title = "Scriptool";
             Console.SetWindowSize(120, 30); //imposta grandezza ottimale della finestra
-            Console.SetBufferSize(120, 9000); //imposta grandezza ottimale del buffer della finestra
+            Console.SetBufferSize(120, 32); //imposta grandezza ottimale del buffer della finestra
 
             string[] line = new string[5]; // !-------PER AGGIUNGERE IMPOSTAZIONI AUMENTARE IL NUMERO DELL'ARRAY--------!
             int counter = 0;
@@ -129,42 +130,41 @@ namespace Scriptool
         //     ---------MENU--------
         public static void MenuPrint()
         {
-             string titolo = ("       _____           _       _              _      \n" +
-                            "      /  ___|         (_)     | |            | |     \n" +
-                            "      \\ `--.  ___ _ __ _ _ __ | |_ ___   ___ | |     \n" +
-                            "       `--. \\/ __| '__| | '_ \\| __/ _ \\ / _ \\| |     \n" +
-                            "      /\\__/ / (__| |  | | |_) | || (_) | (_) | |     \n" +
-                            "      \\____/ \\___|_|  |_| .__/ \\__\\___/ \\___/|_|     \n" +
-                            "                        | |                          \n" +
-                            "                        |_|                           \t \n" +
-                            "________________________________________________________________________________________________________________________\n" +
-                            "\n\n\n\n\n");
+            string titolo = ("       _____           _       _              _      \n" +
+                           "      /  ___|         (_)     | |            | |     \n" +
+                           "      \\ `--.  ___ _ __ _ _ __ | |_ ___   ___ | |     \n" +
+                           "       `--. \\/ __| '__| | '_ \\| __/ _ \\ / _ \\| |     \n" +
+                           "      /\\__/ / (__| |  | | |_) | || (_) | (_) | |     \n" +
+                           "      \\____/ \\___|_|  |_| .__/ \\__\\___/ \\___/|_|     \n" +
+                           "                        | |                          \n" +
+                           "                        |_|                           \t \n" +
+                           "________________________________________________________________________________________________________________________\n" +
+                           "\n\n\n\n\n");
 
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.SetCursorPosition(0, 0);
+            Console.SetCursorPosition(0,0);
             Console.CursorSize = 1;
             Console.CursorVisible = false;
             if (lingua == "IT")
             {
-                options = new string[] { " 1) Genera un codice QR", " 2) Genera una password", " 3) Scarica un video da Youtube", " 4) In arrivo", " 5) In arrivo", " 6) Crediti", " 7) Impostazioni", " 8) Esci"};
+                options = new string[] { " 1) Genera un codice QR", " 2) Genera una password", " 3) Scarica un video da Youtube", " 4) In arrivo", " 5) In arrivo", " 6) Crediti", " 7) Impostazioni", " 8) Esci" };
                 PrintOptMenu(options, titolo, "MenuPrint");
             }
             else if (lingua == "EN")
             {
-                options = new string[] { " 1) Generate a QR code", " 2) Generate a password", " 3) Download a video from Youtube", " 4) Coming soon", " 5) Coming soon", " 6) Credits", " 7) Settings", " 8) Exit"};
+                options = new string[] { " 1) Generate a QR code", " 2) Generate a password", " 3) Download a video from Youtube", " 4) Coming soon", " 5) Coming soon", " 6) Credits", " 7) Settings", " 8) Exit" };
                 PrintOptMenu(options, titolo, "MenuPrint");
             }
         }
 
         public static void PrintOptMenu(string[] opt, string staticText, string MethodId)  //opt per le opzioni da printare, staticText per scrivere un eventuale testo che non deve essere cancellato
         {                                                                                 // MethodIdentifier per indentificare da quale metodo viene chiamato
+            
             int currentOpt = 0;
-            ConsoleKey key;
-            Console.CursorVisible = false;
-            while(true)
+            while (true)
             {
-                System.Diagnostics.Debug.WriteLine($"currentOpt: {currentOpt}");
+                Debug.WriteLine($"currentOpt: {currentOpt}");
                 Console.Clear();
                 Console.WriteLine(staticText);
                 for (int i = 0; i < opt.Length; i++)
@@ -176,24 +176,31 @@ namespace Scriptool
                     Console.WriteLine(opt[i]);
                     Console.ForegroundColor = ConsoleColor.DarkGreen;  //per il resto delle impostazioni
                 }
-                key = Console.ReadKey(true).Key;
-                switch (key)
+                key = Console.ReadKey(false).Key;
+                if (key == ConsoleKey.UpArrow)
                 {
-                    case ConsoleKey.UpArrow:
-                        if (currentOpt > 0) currentOpt--;  //per salire nel menu
-                        else if (currentOpt == 0) currentOpt = opt.Length - 1;  //se si è alla prima opzione e si va in su si va all'ultima opzione
-                        break;
-                    case ConsoleKey.DownArrow:
-                        if (currentOpt < opt.Length - 1) currentOpt++; //per scendere nel menu
-                        else if (currentOpt == opt.Length - 1) currentOpt = 0;  //se si è all'ultima opzione e si va ancora in giù si va alla prima opzione
-                        break;
-                    case ConsoleKey.Enter:
-                        InitOpt(currentOpt, MethodId); //se si preme Enter chiama InitOpt con l'opzione scelta(currentOpt) e il nome del metodo da cui viene chiamato (MethodId)
-                        break;
+                    if (currentOpt > 0) currentOpt--;  //per salire nel menu
+                    else if (currentOpt == 0) currentOpt = opt.Length - 1;  //se si è alla prima opzione e si va in su si va all'ultima opzione
                 }
+                else if (key == ConsoleKey.DownArrow)
+                {
+                    if (currentOpt < opt.Length - 1) currentOpt++; //per scendere nel menu
+                    else if (currentOpt == opt.Length - 1) currentOpt = 0;  //se si è all'ultima opzione e si va ancora in giù si va alla prima opzione
+                }
+                else if (key == ConsoleKey.Enter)
+                {
+                    InitOpt(currentOpt, MethodId); //se si preme Enter chiama InitOpt con l'opzione scelta(currentOpt) e il nome del metodo da cui viene chiamato (MethodId)
+                }
+
             }
         }
-
+        private static void ClearCurrentConsoleLine()
+        {
+            int currentLineCursor = Console.CursorTop;
+            Console.SetCursorPosition(0, Console.CursorTop);
+            Console.Write(new string(' ', Console.WindowWidth));
+            Console.SetCursorPosition(0, currentLineCursor);
+        }
         //Inizializza l'opzione scelta
         static void InitOpt(int chosenOpt, string MethodId) //opzione scelta(currentOpt) | nome del metodo da cui viene chiamato (MethodId)
         {
@@ -269,7 +276,7 @@ namespace Scriptool
                 else   //PROCEDI A SCARICARE IL VIDEO
                 {
                     DownloadYTVideo.GetDownloadUrl(chosenOpt);
-                }   
+                }
             }
             else if (MethodId == "Impostazioni") // se invece viene chiamato da "Impostazioni"
             {
@@ -318,7 +325,7 @@ namespace Scriptool
             else if (lingua == "EN")
             {
                 Console.Write(" 2: Write the length of the password(1-255): ");
-            } 
+            }
             try //ho messo il try per prevenire il crash del programma se l'input è maggiore del limite e quindi causa un Overflow e se l'input non è numerico quindi causa un FormatException
             {
                 int lunghezza = Convert.ToByte(Console.ReadLine());
@@ -391,7 +398,7 @@ namespace Scriptool
                 Console.Clear();
                 MenuPrint();
             }
-            
+
         }
 
         //----Scarica un video da youtube----//

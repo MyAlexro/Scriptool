@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Diagnostics;
 using static Scriptool.MainClass; //per accedere alle impostazioni
 
 namespace Scriptool
@@ -231,7 +232,7 @@ namespace Scriptool
             }
             string[] opz = new string[availableQualities.Count + 1]; //opzioni da passare al PrintOptMenu
             int n = 0;
-            System.Diagnostics.Debug.WriteLine($"availableQualities.Count = {availableQualities.Count}");
+            Debug.WriteLine($"availableQualities.Count = {availableQualities.Count}");
             if (availableQualities.Count != 0)
             {
                 foreach (var value in availableQualities)
@@ -245,7 +246,7 @@ namespace Scriptool
             {
                 if (lingua == "IT")
                 {
-                    System.Diagnostics.Debug.WriteLine("nessuna qualità trovata");
+                    Debug.WriteLine("nessuna qualità trovata");
                     bufferPrecedente += "\n\n  Nessuna qualità trovata";
                 }
                 else if (lingua == "EN")
@@ -311,7 +312,7 @@ namespace Scriptool
         static void CheckIfUrlValid(int chosenOpt) //controlla se l'url trovato corrisponde alla qualità scelta
         {
             n++;
-            System.Diagnostics.Debug.WriteLine($"CheckIfUrlValid execution number {n}");
+            Debug.WriteLine($"CheckIfUrlValid execution number {n}");
             chosenQuality = availableQualities.ElementAt(chosenOpt).ToString().Replace(", True]", "").Replace("[", "");
             if (chosenQuality == "FullHD")
             {
@@ -399,7 +400,7 @@ namespace Scriptool
                 {
                     if (videoTitle.Contains(invalidChars[i]))
                     {
-                        System.Diagnostics.Debug.WriteLine("Carattere non valido nel titolo trovato e rimpiazzato");
+                        Debug.WriteLine("Carattere non valido nel titolo trovato e rimpiazzato");
                         videoTitle = videoTitle.Replace(invalidChars[i].ToString(), "");
                     }
                 }
@@ -507,7 +508,7 @@ namespace Scriptool
         static void DownloadCompletedAsync(object sender, AsyncCompletedEventArgs e)
         {
             downloadFinished = true;
-            System.Diagnostics.Debug.WriteLine($"Download completed, downloadFinished = {downloadFinished}");
+            Debug.WriteLine($"Download completed, downloadFinished = {downloadFinished}");
         }
 
         private static string GetVideoSize(Uri uriPath) //prende il peso del video

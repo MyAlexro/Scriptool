@@ -2,6 +2,7 @@
 using System.IO;
 using QRCoder;
 using System.Drawing;
+using System.Diagnostics;
 using static QRCoder.PayloadGenerator;
 using static Scriptool.MainClass;
 
@@ -48,8 +49,7 @@ namespace Scriptool
                 " 8) Esci\n" +
                 "\n1: Seleziona il tipo di codice QR da generare:\n";
                 options = new string[]
-                {" 1) Testo/Link", " 2) Accesso automatico ad una rete WiFi", " 3) Chiama un numero di telefono\n" , "<-Ritorna indietro\n" //opzione 4
-                };
+                {" 1) Testo/Link", " 2) Accesso automatico ad una rete WiFi", " 3) Chiama un numero di telefono" , "<-Ritorna indietro" };
                 MainClass.PrintOptMenu(options, bufferPrecedente, "GeneraQRcode");
             }
             else if (lingua == "EN")
@@ -233,7 +233,7 @@ namespace Scriptool
                 }
                 if (apriQRcode == "Y")  //se l'impostazione apriQRcode è uguale a Y apre il codice QR
                 {
-                    System.Diagnostics.Process.Start($"{defaultQrPath}/{NomeQRcode}.jpeg");
+                    Process.Start($"{defaultQrPath}/{NomeQRcode}.jpeg");
                 }
                 //li metto a null per far sì che il garbage collector svuoti la memoria cancellandoli
                 WiFiPW = null;

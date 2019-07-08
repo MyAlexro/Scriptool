@@ -38,7 +38,7 @@ namespace Scriptool
             {
                 options = new string[]
                 { $" 1) Language: {lingua}", $" 2) Open the QR code after it has been created: {apriQRcode}",
-                  $" 3) Save QR codes with the extension: {QRcodeFormat}",$" 4) Save QR codes to the path: {defaultQrPath}\n\n",$" 5) Save videos to the path: {defaultVideoPath}\n\n",
+                  $" 3) Save QR codes with the extension: {QRcodeFormat}",$" 4) Save QR codes to the path: {defaultQrPath}",$" 5) Save videos to the path: {defaultVideoPath}\n\n",
                   $"<-Go back\n\n"
                 };
                 titolo = "   _____      _   _   _                 \n" +

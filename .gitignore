@@ -18,7 +18,9 @@
 mono_crash.*
 
 # Build results
-*.exe
+Scritpool.exe
+bin/Debug/
+bin/Release
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/

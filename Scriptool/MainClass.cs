@@ -160,7 +160,7 @@ namespace Scriptool
 
         public static void PrintOptMenu(string[] opt, string staticText, string MethodId)  //opt per le opzioni da printare, staticText per scrivere un eventuale testo che non deve essere cancellato
         {                                                                                 // MethodIdentifier per indentificare da quale metodo viene chiamato
-            
+
             int currentOpt = 0;
             while (true)
             {

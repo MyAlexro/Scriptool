@@ -28,5 +28,6 @@ Insert the link of a Youtube video, choose a quality from the available ones and
 
 
 </pre>
-## Known issues:
-1) Some videos can't be downloaded
+## Known issues to fix:
+1) Music videos can't be downloaded, this is because in the metadata requested by the app there isn't any link to the source of the video
+2) Videos containing the underscore char in the ID can't be downloaded

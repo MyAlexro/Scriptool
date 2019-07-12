@@ -253,19 +253,9 @@ namespace Scriptool
             }
             else if (MethodId == "GetQualities")
             {
-                if (chosenOpt == DownloadYTVideo.availableQualities.Count) //TORNA INDIETRO
+                if (chosenOpt == DownloadYTVideo.availableQualities.Count) //SAREBBE L'OPZIONE TORNA INDIETRO
                 {
-                    DownloadYTVideo.urlInput = null;
-                    DownloadYTVideo.videoId = "";
-                    DownloadYTVideo.downloadFinished = false;
-                    DownloadYTVideo.charDecodedResponse = null;
-                    DownloadYTVideo.decodedResponse = "";
-                    DownloadYTVideo.urlDownloadChar = null;
-                    DownloadYTVideo.UrlDownloadStringDecoded = null;
-                    DownloadYTVideo.urlDownloadString = null;
-                    DownloadYTVideo.chosenQuality = "";
-                    DownloadYTVideo.lastPos = 0;
-                    MenuPrint();
+                    DownloadYTVideo.ReturnToMenu();
                 }
                 else   //PROCEDI A SCARICARE IL VIDEO
                 {

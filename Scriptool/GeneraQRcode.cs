@@ -150,11 +150,11 @@ namespace Scriptool
         {
             if (lingua == "IT")
             {
-                Console.Write("  3: Scrivi il numero di telefono che verrà chiamato(non verrà conservato): +");
+                Console.Write("  3: Scrivi il numero di telefono che verrà chiamato(non verrà conservato): ");
             }
             else if (lingua == "EN")
             {
-                Console.Write("  3: Type the phone number that will be dialed(it won't be stored): +");
+                Console.Write("  3: Type the phone number that will be dialed(it won't be stored): ");
             }
             numTelString = Console.ReadLine();
             numTel = new PhoneNumber(numTelString); //inizializza l'object PhoneNumber dalla string numTelString

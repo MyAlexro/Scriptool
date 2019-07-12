@@ -12,7 +12,7 @@ namespace Scriptool
 {
     class DownloadYTVideo
     {
-        public static string urlInput = "";
+        public static string urlInput;
         static WebClient clientWeb;
         static int DownloadUrlStart = 0;
         static int DownloadUrlEnd = 0;
@@ -49,6 +49,8 @@ namespace Scriptool
             char[] url = urlInput.ToCharArray();
             counter = 2;
             videoIdChar = new char[11];
+            try
+            {
             for (int i = 0; i <= url.Length - 1; i++) //lenght-1 perchè così arriva fino al blocco N°66 dell'array, se no arrivava al blocco N°67 dell'array (che non esiste)
             {
                 if (url[i] == 'v' && url[i + 1] == '=') //l'id parte da "v=", ho messo di controllare "v" e "=" perchè nel link del video ce ne potrebbero essere 2 di "="
@@ -60,11 +62,12 @@ namespace Scriptool
                     }
                 }
             }
+
+
             clientWeb = new WebClient(); //inizializza un webclient
             videoId = new string(videoIdChar); //converte l'array di char in stringa
             string getInfoUrl = $"https://www.youtube.com/get_video_info?video_id={videoId}"; //crea l'url da cui prendere le info
-            try
-            {
+
                 string encodedResponse = clientWeb.DownloadString(getInfoUrl.ToString());  //prende le informazioni dall'url
                 decodedResponse = Uri.UnescapeDataString(encodedResponse);
                 decodedResponse = Uri.UnescapeDataString(encodedResponse);
@@ -85,12 +88,27 @@ namespace Scriptool
                         Console.WriteLine("Invalid Url, press Enter to go back to the main Menu");
                     }
                     Console.ReadLine();
-                    MenuPrint();
+                    ReturnToMenu();
                 }
                 else
                 {
                     GetTitle();
                 }
+            }
+            catch(IndexOutOfRangeException)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.CursorVisible = false;
+                if (lingua == "IT")
+                {
+                    Console.WriteLine($"Url non valido, premere Invio per tornare al Menu principale");
+                }
+                else if (lingua == "EN")
+                {
+                    Console.WriteLine("Invalid Url, press Enter to go back to the main Menu");
+                }
+                Console.ReadLine();
+                ReturnToMenu();
             }
             catch (WebException)
             {
@@ -204,7 +222,7 @@ namespace Scriptool
                 $" Video title: {videoTitle}\n\n" +
                 $"  Select the quality of the video:";
             }
-             /*Individua le qualità in cui può essere scaricato il video e aggiunge la qualità al dictionary*/
+            /*Individua le qualità in cui può essere scaricato il video e aggiunge la qualità al dictionary*/
             availableQualities = new Dictionary<String, bool>();
             if (decodedResponse.Contains("itag=37") || decodedResponse.Contains("itag=85") || decodedResponse.Contains("itag=96"))
             {
@@ -457,54 +475,43 @@ namespace Scriptool
                 {
                     Console.WriteLine("An error occured while trying to download the video, press Enter to go back to the main Menu");
                 }
+                File.Delete($@"{defaultVideoPath}\{videoTitle}.mp4");
                 Console.Read();
-                MenuPrint();
+                ReturnToMenu();
             }
 
             if (downloadFinished == true)
             {
-                FileInfo FileSize = new FileInfo($@"{defaultVideoPath}\{videoTitle}.mp4");
-                if (FileSize.Length <= 1)
+                DateTime finishTimeDate = DateTime.Parse(DateTime.Now.ToString());
+                string finishTime = finishTimeDate.ToString("HH:mm:ss");
+                if (lingua == "IT")
                 {
-                    if (lingua == "IT")
-                    {
-                        Console.WriteLine("\nE' stato impossibile scaricare il video, premere Invio per tornare al Menu principale");
-                    }
-                    else if (lingua == "EN")
-                    {
-                        Console.WriteLine($"\nIt was impossible to download the video, press Enter to go back to the main Menu");
-                    }
-                    File.Delete($@"{defaultVideoPath}\{videoTitle}.mp4");
+                    Console.WriteLine($"\nDownload video completato {finishTime}, premere Invio per tornare al Menu principale");
                 }
-                else
+                else if (lingua == "EN")
                 {
-                    DateTime finishTimeDate = DateTime.Parse(DateTime.Now.ToString());
-                    string finishTime = finishTimeDate.ToString("HH:mm:ss");
-                    if (lingua == "IT")
-                    {
-                        Console.WriteLine($"\nDownload video completato {finishTime}, premere Invio per tornare al Menu principale");
-                    }
-                    else if (lingua == "EN")
-                    {
-                        Console.WriteLine($"\nDownload completed {finishTime}, press Enter to go back to the main Menu");
-                    }
+                    Console.WriteLine($"\nDownload completed {finishTime}, press Enter to go back to the main Menu");
                 }
-
-                Console.ReadLine();
-                videoId = "";
-                downloadFinished = false;
-                charDecodedResponse = null;
-                decodedResponse = "";
-                urlDownloadChar = null;
-                UrlDownloadStringDecoded = null;
-                urlDownloadString = null;
-                chosenQuality = "";
-                lastPos = 0;
-                GC.Collect();
-                MenuPrint();
+                Console.Read();
+                ReturnToMenu();
             }
         }
 
+        public static void ReturnToMenu()
+        {
+            urlInput = String.Empty;
+            clientWeb = null;
+            videoId = "";
+            downloadFinished = false;
+            charDecodedResponse = null;
+            decodedResponse = "";
+            urlDownloadChar = null;
+            UrlDownloadStringDecoded = null;
+            urlDownloadString = null;
+            chosenQuality = "";
+            lastPos = 0;
+            MenuPrint();
+        }
         static void DownloadCompletedAsync(object sender, AsyncCompletedEventArgs e)
         {
             downloadFinished = true;
@@ -513,7 +520,7 @@ namespace Scriptool
 
         private static string GetVideoSize(Uri uriPath) //prende il peso del video
         {
-            var webRequest = HttpWebRequest.Create(uriPath); 
+            var webRequest = HttpWebRequest.Create(uriPath);
             webRequest.Method = "HEAD";
 
             using (var webResponse = webRequest.GetResponse())

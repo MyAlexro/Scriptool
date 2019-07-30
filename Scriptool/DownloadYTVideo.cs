@@ -47,55 +47,28 @@ namespace Scriptool
             }
             urlInput = Console.ReadLine();
             char[] url = urlInput.ToCharArray();
-            counter = 2;
+            int idStartPos;
+            int idEndPos;
             videoIdChar = new char[11];
+            Console.CursorVisible = false;
             try
             {
-            for (int i = 0; i <= url.Length - 1; i++) //lenght-1 perchè così arriva fino al blocco N°66 dell'array, se no arrivava al blocco N°67 dell'array (che non esiste)
-            {
-                if (url[i] == 'v' && url[i + 1] == '=') //l'id parte da "v=", ho messo di controllare "v" e "=" perchè nel link del video ce ne potrebbero essere 2 di "="
+                for (int i = 0; i <= url.Length - 1; i++) //lenght-1 perchè così arriva fino al blocco N°66 dell'array, se no arrivava al blocco N°67 dell'array (che non esiste)
                 {
-                    for (int a = 0; a <= videoIdChar.Length - 1; a++)
+                    if (url[i] == 'v' && url[i + 1] == '=') //l'id parte da "v=", ho messo di controllare "v" e "=" perchè nel link del video ce ne potrebbero essere 2 di "="
                     {
-                        videoIdChar[a] = url[i + counter];
-                        counter++;
+                        idStartPos = i + 2;
+                        idEndPos = idStartPos + 10;
+                        for (int a = 0; a <= 10; a++)
+                        {
+                            videoIdChar[a] = url[idStartPos + a];
+                        }
+                        break;
                     }
                 }
+
             }
-
-
-            clientWeb = new WebClient(); //inizializza un webclient
-            videoId = new string(videoIdChar); //converte l'array di char in stringa
-            string getInfoUrl = $"https://www.youtube.com/get_video_info?video_id={videoId}"; //crea l'url da cui prendere le info
-
-                string encodedResponse = clientWeb.DownloadString(getInfoUrl.ToString());  //prende le informazioni dall'url
-                decodedResponse = Uri.UnescapeDataString(encodedResponse);
-                decodedResponse = Uri.UnescapeDataString(encodedResponse);
-                decodedResponse = Uri.UnescapeDataString(encodedResponse);
-                decodedResponse = Uri.UnescapeDataString(encodedResponse);
-                decodedResponse = Uri.UnescapeDataString(encodedResponse); //decoda la risposta del server 6 volte perchè una volta non basta per convertire tutti i simboli url in testo(idk perchè)
-                charDecodedResponse = decodedResponse.ToCharArray(); //converte la risposta in array char
-                if (decodedResponse.Contains("reason=Invalid+parameters"))
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.CursorVisible = false;
-                    if (lingua == "IT")
-                    {
-                        Console.WriteLine($"Url non valido, premere Invio per tornare al Menu principale");
-                    }
-                    else if (lingua == "EN")
-                    {
-                        Console.WriteLine("Invalid Url, press Enter to go back to the main Menu");
-                    }
-                    Console.ReadLine();
-                    ReturnToMenu();
-                }
-                else
-                {
-                    GetTitle();
-                }
-            }
-            catch(IndexOutOfRangeException)
+            catch (IndexOutOfRangeException)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.CursorVisible = false;
@@ -110,6 +83,41 @@ namespace Scriptool
                 Console.ReadLine();
                 ReturnToMenu();
             }
+
+            try
+            {
+                clientWeb = new WebClient(); //inizializza un webclient
+                videoId = new string(videoIdChar); //converte l'array di char in stringa
+                string getInfoUrl = $"https://www.youtube.com/get_video_info?video_id={videoId}"; //crea l'url da cui prendere le info
+                Debug.WriteLine(getInfoUrl);
+
+                string encodedResponse = clientWeb.DownloadString(getInfoUrl.ToString());  //prende le informazioni dall'url
+                decodedResponse = Uri.UnescapeDataString(encodedResponse);
+                decodedResponse = Uri.UnescapeDataString(encodedResponse);
+                decodedResponse = Uri.UnescapeDataString(encodedResponse);
+                decodedResponse = Uri.UnescapeDataString(encodedResponse);
+                decodedResponse = Uri.UnescapeDataString(encodedResponse); //decoda la risposta del server 6 volte perchè una volta non basta per convertire tutti i simboli url in testo(idk perchè)
+                charDecodedResponse = decodedResponse.ToCharArray(); //converte la risposta in array char
+                if (decodedResponse.Contains("reason=Invalid+parameters"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.CursorVisible = false;
+                    if (lingua == "IT")
+                    {
+                        Console.WriteLine($"Url non valido, premere Invio per tornare al Menu principale: invalid parameters");
+                    }
+                    else if (lingua == "EN")
+                    {
+                        Console.WriteLine("Invalid Url, press Enter to go back to the main Menu: invalid parameters");
+                    }
+                    Console.ReadLine();
+                    ReturnToMenu();
+                }
+                else
+                {
+                    GetTitle();
+                }
+            }
             catch (WebException)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -122,7 +130,7 @@ namespace Scriptool
                     Console.WriteLine("No internet connection, press Enter to go back to the main Menu");
                 }
                 Console.ReadLine();
-                MenuPrint();
+                ReturnToMenu();
             }
         }
 
@@ -130,54 +138,67 @@ namespace Scriptool
 
         static void GetTitle()
         {
-            int titleStart = 0;
-            int titleEnd = 0;
-            for (int i = 0; i <= charDecodedResponse.Length; i++)
+            try
             {
-                if (charDecodedResponse[i] == 't' && charDecodedResponse[i + 1] == 'l' && charDecodedResponse[i + 2] == 'e' && charDecodedResponse[i + 3] == '=')
+                int titleStart = 0;
+                int titleEnd = 0;
+                for (int i = 0; i <= charDecodedResponse.Length; i++)
                 {
-                    titleStart = i + 4;
-                    break;
-                }
-            }
-
-            if (titleStart != 0)
-            {
-                try
-                {
-                    for (int i = titleStart; i <= charDecodedResponse.Length; i++)
+                    if (charDecodedResponse[i] == 't' && charDecodedResponse[i + 1] == 'l' && charDecodedResponse[i + 2] == 'e' && charDecodedResponse[i + 3] == '"' && charDecodedResponse[i + 4] == ':')
                     {
-                        if (charDecodedResponse[i] == '&')
-                        {
-                            titleEnd = i - 1;
-                            break;
-                        }
+                        titleStart = i + 6;
+                        break;
                     }
                 }
-                catch (IndexOutOfRangeException)
+
+                if (titleStart != 0)
                 {
-                    titleEnd = charDecodedResponse.Length - 1;
+                    try
+                    {
+                        for (int i = titleStart; i <= charDecodedResponse.Length; i++)
+                        {
+                            if (charDecodedResponse[i] == '"' && charDecodedResponse[i + 1] == ',')
+                            {
+                                titleEnd = i - 1;
+                                break;
+                            }
+                        }
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        titleEnd = charDecodedResponse.Length - 1;
+                    }
+                    int titleLength = (titleEnd - titleStart) + 1;
+                    videoTitleChar = new char[titleLength];
+                    counter = 0;
+                    for (int i = titleStart; i <= titleEnd; i++)
+                    {
+                        videoTitleChar[counter] = charDecodedResponse[i];
+                        counter++;
+                    }
+                    videoTitle = WebUtility.UrlDecode(new string(videoTitleChar));
+                    if (lingua == "IT")
+                    {
+                        Console.WriteLine($"Titolo del video: {videoTitle}");
+                    }
+                    else if (lingua == "EN")
+                    {
+                        Console.WriteLine($"Video title: {videoTitle}");
+                    }
                 }
-                int titleLength = (titleEnd - titleStart) + 1;
-                videoTitleChar = new char[titleLength];
-                counter = 0;
-                for (int i = titleStart; i <= titleEnd; i++)
-                {
-                    videoTitleChar[counter] = charDecodedResponse[i];
-                    counter++;
-                }
-                videoTitle = WebUtility.UrlDecode(new string(videoTitleChar));
+            }
+            catch(IndexOutOfRangeException)
+            {
                 if (lingua == "IT")
                 {
-                    Console.WriteLine($"Titolo del video: {videoTitle}");
+                    Console.WriteLine($"Titolo del video non disponibile");
                 }
                 else if (lingua == "EN")
                 {
-                    Console.WriteLine($"Video title: {videoTitle}");
+                    Console.WriteLine($"Video title non available");
                 }
-                GetQualities();
             }
-
+                GetQualities();
         }
 
 

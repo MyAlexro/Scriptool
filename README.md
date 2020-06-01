@@ -15,7 +15,7 @@ Generate 3 types of QR codes:
 Given the lenght of the password, the software will generate one. The password could contain these special characters: è,é,&,?,!,@
 
 
-## Download a video from Youtube
+## Download a video from Youtube(Doesn't work anymore)
 Insert the link of a Youtube video, choose a quality from the available ones and download it.                                             The algorithm was written by me
 
 ## Others incoming...
